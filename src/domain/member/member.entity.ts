@@ -20,10 +20,12 @@ import { Approved, Role } from './member.enum';
 import { Sex } from '@domain/common.enum';
 import { BoardEntity } from '@domain/board/board.entity';
 import { CommentEntity } from '@domain/comment/comment.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('member')
 export class MemberEntity {
   @PrimaryColumn()
+  @ApiProperty()
   id: string;
 
   @Column({
@@ -32,6 +34,7 @@ export class MemberEntity {
   })
   @IsString()
   @IsNotEmpty()
+  @ApiProperty()
   name: string;
 
   @Column({
@@ -41,6 +44,7 @@ export class MemberEntity {
   })
   @IsEmail()
   @IsNotEmpty()
+  @ApiProperty()
   email: string;
 
   @Column({
@@ -50,6 +54,7 @@ export class MemberEntity {
   })
   @IsEnum(Role)
   @IsNotEmpty()
+  @ApiProperty()
   role: Role;
 
   @Column({
@@ -59,6 +64,7 @@ export class MemberEntity {
   })
   @IsEnum(Sex)
   @IsNotEmpty()
+  @ApiProperty()
   sex: Sex;
 
   @Column({
@@ -67,6 +73,7 @@ export class MemberEntity {
   })
   @IsDateString()
   @IsNotEmpty()
+  @ApiProperty()
   birth: Date;
 
   @Column({
@@ -75,6 +82,7 @@ export class MemberEntity {
   })
   @IsString()
   @IsNotEmpty()
+  @ApiProperty()
   phonenumber: string;
 
   @Column({
@@ -84,6 +92,7 @@ export class MemberEntity {
   })
   @IsEnum(Approved)
   @IsNotEmpty()
+  @ApiProperty()
   approved: Approved;
 
   @Column({
@@ -92,20 +101,25 @@ export class MemberEntity {
   })
   @IsBoolean()
   @IsNotEmpty()
+  @ApiProperty()
   emailConfirmed: boolean;
 
   @CreateDateColumn()
+  @ApiProperty()
   createdAt: Date;
 
   @UpdateDateColumn()
+  @ApiProperty()
   updatedAt: Date;
 
   @OneToMany(() => BoardEntity, (board) => board.writer, {
     cascade: ['insert', 'update', 'remove'],
   })
+  @ApiProperty()
   boards: Relation<BoardEntity[]>;
 
   @OneToMany(() => CommentEntity, (comment) => comment.writer)
+  @ApiProperty()
   comments: Relation<CommentEntity[]>;
 
   constructor(data: MemberEntity) {
