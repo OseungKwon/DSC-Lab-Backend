@@ -10,11 +10,15 @@ import {
 import { MemberService } from './member.service';
 import { ConfigType } from '@nestjs/config';
 import { ApiTags } from '@nestjs/swagger';
+import { MqAlertService } from '@app/mq-alert/mq-alert.service';
 
 @Controller('member')
 @ApiTags('member')
 export class MemberController {
-  constructor(private readonly memberService: MemberService) {}
+  constructor(
+    private readonly memberService: MemberService,
+    private readonly mqAlertService: MqAlertService,
+  ) {}
 
   @Get()
   public async getAll(

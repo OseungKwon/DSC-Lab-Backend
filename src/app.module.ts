@@ -9,11 +9,7 @@ import { LoggerModuleConfig } from './module-config/logger.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeORMConfig } from './module-config/typeorm.config';
 import { MemberModule } from './app/member/member.module';
-import * as dotenv from 'dotenv';
-
-dotenv.config({
-  path: `${__dirname}/config/env/${process.env.API_MODE || 'dev'}.env`,
-});
+import { MqAlertModule } from './app/mq-alert/mq-alert.module';
 
 @Module({
   imports: [
@@ -22,6 +18,7 @@ dotenv.config({
     UlidModule,
     TypeOrmModule.forRootAsync(typeORMConfig),
     MemberModule,
+    MqAlertModule,
   ],
   controllers: [AppController],
   providers: [AppService],
