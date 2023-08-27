@@ -1,3 +1,4 @@
+import { MqAlertService } from '@app/mq-alert/mq-alert.service';
 import { ErrorCode, FilteredException } from '@infrastructure/types/type';
 import {
   ArgumentsHost,
@@ -12,12 +13,16 @@ import { QueryFailedError, TypeORMError } from 'typeorm';
 
 @Catch()
 export class InternalExceptionFilter implements ExceptionFilter {
-  constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
+  constructor(
+    private readonly httpAdapterHost: HttpAdapterHost,
+    private readonly mqAlert: MqAlertService,
+  ) {}
 
   catch(exception: any, host: ArgumentsHost) {
     const { httpAdapter } = this.httpAdapterHost;
 
     const ctx = host.switchToHttp();
+    ctx.getResponse<Response>().url;
     // Get error response body
     const errorResponse =
       exception instanceof HttpException ? exception.getResponse() : undefined;
@@ -31,16 +36,15 @@ export class InternalExceptionFilter implements ExceptionFilter {
      *
      */
     if (!(errorResponse instanceof ErrorCode)) {
-      const message = `${(exception as Error)?.name} - ${
-        (exception as Error)?.message
-      }`;
-      errorCodeInstance = new ErrorCode(5000, message);
+      errorCodeInstance = new ErrorCode(5000, exception);
+      this.mqAlert.reportUnexpectedErrorMessage(errorCodeInstance);
     }
     const resBody = new FilteredException({
       statusCode,
       errorCode: errorCodeInstance?.errorCode,
       message: errorCodeInstance?.description,
     });
+
     httpAdapter.reply(ctx.getResponse(), resBody, statusCode);
   }
 }

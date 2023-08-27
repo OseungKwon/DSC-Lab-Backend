@@ -16,6 +16,7 @@ services:
     depends_on:
       - db
       - mongo
+      - mq
   db:
     container_name: database
     image: mysql
@@ -37,6 +38,18 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=password1234!
       - MONGO_INITDB_DATABASE=cloud-edu
+    networks:
+      - backend-network
+  mq:
+    image: rabbitmq:3-management
+    restart: 'unless-stopped'
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+      - '1883:1883'
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=password
     networks:
       - backend-network
 networks:
