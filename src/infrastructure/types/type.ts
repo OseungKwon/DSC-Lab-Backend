@@ -18,7 +18,7 @@ export class FilteredException {
   @ApiProperty()
   errorCode: number;
   @ApiProperty()
-  message: string;
+  message: any;
 
   constructor(data: FilteredException) {
     Object.assign(this, data);

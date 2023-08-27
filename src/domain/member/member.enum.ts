@@ -1,3 +1,8 @@
+export enum Sex {
+  MALE = 'male',
+  FEMALE = 'female',
+}
+
 export enum Role {
   GRADUATE_STUDENT = 'graduate-student',
   POST_GRADUATE_STUDENT = 'post-graduate-student',
@@ -9,4 +14,9 @@ export enum Approved {
   APPROVE = 'approve',
   REJECT = 'reject',
   RESTRICT = 'restrict',
+}
+
+export enum CheckType {
+  EMAIL = 'email',
+  NICKNAME = 'nickname',
 }

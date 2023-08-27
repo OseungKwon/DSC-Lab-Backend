@@ -1,41 +1,43 @@
 import { Module } from '@nestjs/common';
 import { MqAlertService } from './mq-alert.service';
-import {
-  ClientProvider,
-  ClientsModule,
-  Transport,
-} from '@nestjs/microservices';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MqAlertController } from './mq-alert.controller';
 import * as amqp from 'amqplib';
-import { MQALERT, amqpConnectionBuilderFactory } from './mq-alert.constant';
 import { Logger, LoggerModule } from '@hoplin/nestjs-logger';
+import { RabbitMQConfig, RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
+import { ERR_MSG_EXG } from './mq-alert.constant';
 
 @Module({
-  imports: [LoggerModule.forFeature()],
-  providers: [
-    MqAlertService,
-    {
-      // Inject provider as async factory
-      provide: MQALERT.MQ1_CONNECTION,
-      useFactory: async (
-        config: ConfigService,
-        logger: Logger,
-      ): Promise<amqp.Connection> => {
-        const rmqConnectionURL = `amqp://${config.get<string>(
-          'MQ1_USER',
-        )}:${config.get<string>('MQ1_PASSWORD')}@${config.get<string>(
-          'MQ1_URL',
-        )}:${config.get<string>('MQ1_PORT')}`;
-        const connection = await amqpConnectionBuilderFactory(rmqConnectionURL);
-        connection.on('error', (err) => {
-          logger.error(err);
-        });
-        return connection;
+  imports: [
+    LoggerModule.forFeature(),
+    RabbitMQModule.forRootAsync(RabbitMQModule, {
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (cfg: ConfigService) => {
+        return {
+          uri: `amqp://${cfg.get<string>('MQ1_USER')}:${cfg.get<string>(
+            'MQ1_PASSWORD',
+          )}@${cfg.get<string>('MQ1_URL')}:${cfg.get<string>('MQ1_PORT')}`,
+          exchanges: [
+            {
+              type: 'topic',
+              name: ERR_MSG_EXG,
+              options: {
+                durable: true,
+              },
+            },
+          ],
+          channels: {
+            default_channel: {
+              prefetchCount: 2,
+              default: true,
+            },
+          },
+        };
       },
-      inject: [ConfigService, Logger],
-    },
+    }),
   ],
+  providers: [MqAlertService],
   exports: [MqAlertService],
   controllers: [MqAlertController],
 })

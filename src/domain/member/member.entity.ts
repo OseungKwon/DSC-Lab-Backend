@@ -4,6 +4,7 @@ import {
   IsEmail,
   IsEnum,
   IsNotEmpty,
+  IsOptional,
   IsString,
 } from 'class-validator';
 import {
@@ -36,6 +37,24 @@ export class MemberEntity {
   @IsNotEmpty()
   @ApiProperty()
   name: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: false,
+    unique: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  nickname: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: false,
+  })
+  @IsNotEmpty()
+  @IsString()
+  password: string;
 
   @Column({
     type: 'varchar',
@@ -78,10 +97,10 @@ export class MemberEntity {
 
   @Column({
     type: 'varchar',
-    nullable: false,
+    nullable: true,
   })
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty()
   phonenumber: string;
 
@@ -89,6 +108,7 @@ export class MemberEntity {
     type: 'enum',
     enum: Approved,
     nullable: false,
+    default: Approved.PENDING,
   })
   @IsEnum(Approved)
   @IsNotEmpty()
@@ -98,6 +118,7 @@ export class MemberEntity {
   @Column({
     type: 'boolean',
     nullable: false,
+    default: false,
   })
   @IsBoolean()
   @IsNotEmpty()
@@ -122,7 +143,7 @@ export class MemberEntity {
   @ApiProperty()
   comments: Relation<CommentEntity[]>;
 
-  constructor(data: MemberEntity) {
+  constructor(data: Partial<MemberEntity>) {
     Object.assign(this, data);
   }
 }
