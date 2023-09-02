@@ -23,7 +23,6 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { MqAlertService } from '@app/mq-alert/mq-alert.service';
 import { CommonResponseDto } from '@app/common.response.dto';
 import { MemberEntity } from '@domain/member/member.entity';
 import { MEMBER_EXCEPTION_MSG } from '@infrastructure/exception/member';
