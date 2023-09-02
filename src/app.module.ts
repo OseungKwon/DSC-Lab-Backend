@@ -9,9 +9,9 @@ import { LoggerModuleConfig } from './module-config/logger.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeORMConfig } from './module-config/typeorm.config';
 import { MemberModule } from './app/member/member.module';
-import { MqAlertModule } from './app/mq-alert/mq-alert.module';
 import { AuthenticationModule } from './app/authentication/authentication.module';
 import { AuthorizationModule } from './app/authorization/authorization.module';
+import { AlertModule } from './app/alert/alert.module';
 
 @Module({
   imports: [
@@ -19,10 +19,14 @@ import { AuthorizationModule } from './app/authorization/authorization.module';
     ConfigModule.forRoot(configOptions),
     UlidModule,
     TypeOrmModule.forRootAsync(typeORMConfig),
+    AlertModule.forRootConfig({
+      strategy: 'discord',
+      configKey: 'DISCORD_HOOK',
+    }),
     MemberModule,
-    MqAlertModule,
     AuthenticationModule,
     AuthorizationModule,
+    AlertModule,
   ],
   controllers: [AppController],
   providers: [AppService],

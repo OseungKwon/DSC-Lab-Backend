@@ -2,6 +2,22 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export type SwaggerTag = Record<string, string>;
 
+export type AvailableStrategy = 'discord' | 'slack';
+
+export interface AlertOption {
+  strategy: AvailableStrategy;
+  webhookURL: string;
+}
+
+export interface AlertOptionConfig {
+  strategy: AvailableStrategy;
+  configKey: string;
+}
+
+export type AlertForRootOption = AlertOption;
+
+export type AlertForRootConfigOptions = AlertOptionConfig;
+
 export class ErrorCode {
   errorCode: number;
   description: string;
@@ -13,6 +29,8 @@ export class ErrorCode {
 }
 
 export class FilteredException {
+  @ApiProperty()
+  endpoint: string;
   @ApiProperty()
   statusCode: number;
   @ApiProperty()

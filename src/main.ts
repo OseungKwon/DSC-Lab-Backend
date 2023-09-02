@@ -7,7 +7,6 @@ import { InternalExceptionFilter } from '@infrastructure/exception/exception.fil
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
-import { MqAlertService } from '@app/mq-alert/mq-alert.service';
 
 async function bootstrap() {
   // Nest.js Http REST Service
@@ -16,12 +15,7 @@ async function bootstrap() {
   // Nest Application config
   app.enableCors();
   app.setGlobalPrefix('v1');
-  app.useGlobalFilters(
-    new InternalExceptionFilter(
-      app.get(HttpAdapterHost),
-      app.get(MqAlertService),
-    ),
-  );
+  app.useGlobalFilters(new InternalExceptionFilter(app.get(HttpAdapterHost)));
   app.useGlobalPipes(new ValidationPipe());
   // Swagger document
   const document = SwaggerModule.createDocument(app, swaggerConfig);
