@@ -48,14 +48,12 @@ export class AlertModule {
       module: AlertModule,
       providers: [
         {
+          provide: ALERT_TOKEN,
+          useValue: process.env[option.configKey],
+        },
+        {
           provide: AlertService,
-          useFactory: (cfg: ConfigService) => {
-            console.log(process.env);
-            return new AlertModule.tokenMapper[option.strategy](
-              cfg.get(option.configKey),
-            );
-          },
-          inject: [ConfigService],
+          useClass: AlertModule.tokenMapper[option.strategy],
         },
       ],
     };

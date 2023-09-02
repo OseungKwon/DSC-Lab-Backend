@@ -1,25 +1,27 @@
+import { AlertService } from '@app/alert/alert.service';
 import { ErrorCode, FilteredException } from '@infrastructure/types/type';
 import {
   ArgumentsHost,
   Catch,
   ExceptionFilter,
   HttpException,
-  HttpExceptionBody,
-  InternalServerErrorException,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
-import { QueryFailedError, TypeORMError } from 'typeorm';
+import { Request } from 'express';
 
 @Catch()
 export class InternalExceptionFilter implements ExceptionFilter {
-  constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
+  constructor(
+    private readonly httpAdapterHost: HttpAdapterHost,
+    private readonly alertService: AlertService,
+  ) {}
 
-  catch(exception: any, host: ArgumentsHost) {
+  async catch(exception: any, host: ArgumentsHost) {
     const { httpAdapter } = this.httpAdapterHost;
 
     const ctx = host.switchToHttp();
     // Get error endpoint
-    const endpoint = ctx.getResponse<Response>().url;
+    const endpoint = ctx.getRequest<Request>().originalUrl;
     // Get error response body
     const errorResponse =
       exception instanceof HttpException ? exception.getResponse() : undefined;
@@ -33,14 +35,22 @@ export class InternalExceptionFilter implements ExceptionFilter {
      *
      */
     if (!(errorResponse instanceof ErrorCode)) {
-      errorCodeInstance = new ErrorCode(5000, exception);
+      // Set as default 500 Internal Server Error
+      errorCodeInstance = new ErrorCode(
+        5000,
+        'Urgent : Unhandled Error. Please make issue to repository and progress hotfix ASAP.',
+      );
+    } else {
+      errorCodeInstance = errorResponse;
     }
+
     const resBody = new FilteredException({
       endpoint,
       statusCode,
       errorCode: errorCodeInstance?.errorCode,
       message: errorCodeInstance?.description,
     });
+    await this.alertService.send(resBody);
 
     httpAdapter.reply(ctx.getResponse(), resBody, statusCode);
   }

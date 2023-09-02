@@ -10,9 +10,9 @@ import { ALERT_TOKEN } from './alert.token';
 export class DiscordStrategyService implements AlertStrategy {
   private webHookClient: WebhookClient;
   private logger = new Logger('Discord Alert');
+  private unknown = 'UNKNOWN';
 
   constructor(@Inject(ALERT_TOKEN) private readonly webHookURL: string) {
-    console.log(this.webHookURL);
     this.webHookClient = new WebhookClient({
       url: this.webHookURL,
     });
@@ -23,6 +23,7 @@ export class DiscordStrategyService implements AlertStrategy {
       const embed = await this.getEmbed(message);
       await this.webHookClient.send({ embeds: [embed] });
     } catch (err) {
+      console.error(err);
       this.logger.error(err);
     }
   }
@@ -33,21 +34,31 @@ export class DiscordStrategyService implements AlertStrategy {
       .setTitle('Hongik Univ. DSC Server Alert')
       .setURL('https://github.com/J-hoplin1/DSC-Lab-Backend')
       .setDescription(
-        '홍익대학교 소프트웨어 융합학과 서버 에러 메세지 알림입니다. 관리자에게 이 메세지를 보여주세요',
+        '서버 에러 메세지 알림입니다. 관리자에게 이 메세지를 보여주세요',
       )
       .setThumbnail(
-        'https://www.hongik.ac.kr/front/images/local/header_logo.png',
+        'https://scontent-ssn1-1.xx.fbcdn.net/v/t39.30808-6/334766267_5384043541696329_5186981967087625133_n.jpg?stp=dst-jpg_p526x296&_nc_cat=101&ccb=1-7&_nc_sid=a2f6c7&_nc_ohc=r4StzZ6-7OoAX97e48j&_nc_ht=scontent-ssn1-1.xx&oh=00_AfAL5K5HS9ru9328KWLc2zVrbWucuzIJEyACgGMKis9g0A&oe=64F7ADFF',
       )
       .addFields(
         {
-          name: 'Error Endpoint & Status Code',
-          value: `${message?.endpoint} (${message?.statusCode})`,
+          name: 'Error Endpoint',
+          value: `${message.endpoint ? message.endpoint : this.unknown}`,
+          inline: true,
+        },
+        {
+          name: 'Status Code',
+          value: `${message.statusCode ? message.endpoint : this.unknown}`,
           inline: true,
         },
         {
           name: 'Error Message',
-          value: message.message,
-          inline: true,
+          value:
+            typeof message?.message === 'object'
+              ? JSON.stringify(message?.message)
+              : message.message
+              ? message.message
+              : this.unknown,
+          inline: false,
         },
       )
       .setTimestamp()
