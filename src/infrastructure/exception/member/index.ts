@@ -1,4 +1,4 @@
-import { validateTypeArray } from '@app/member/validate-type.filter';
+import { validateTypeArray } from '@app/member/filter/validate-type.filter';
 import { ErrorCode, ErrorObject } from '@infrastructure/types/type';
 import { BadRequestException, HttpException } from '@nestjs/common';
 

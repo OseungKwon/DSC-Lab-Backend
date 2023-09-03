@@ -85,8 +85,8 @@ export class EmailStrategyService implements AlertStrategy {
       message.endpoint ? message.endpoint : this.unknown
     }</p>
         <p style="color: #555;">${alertStatusCode} : ${
-      message.errorCode ? message.errorCode : this.unknown
-    }</p>
+      message.statusCode ? message.statusCode : this.unknown
+    }(${message.errorCode ? message.errorCode : this.unknown})</p>
         <p style="color: #555;">${alertErrorMessage} : ${
       typeof message?.message === 'object'
         ? JSON.stringify(message?.message)
