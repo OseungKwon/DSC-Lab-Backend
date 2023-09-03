@@ -46,7 +46,9 @@ export class SlackStrategyService implements AlertStrategy {
         },
         {
           title: alertStatusCode,
-          value: `${message.statusCode ? message.statusCode : this.unknown}`,
+          value: `${message.statusCode ? message.statusCode : this.unknown}(${
+            message.errorCode ? message.errorCode : this.unknown
+          })`,
           short: true,
         },
         {

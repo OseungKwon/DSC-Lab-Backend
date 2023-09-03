@@ -54,7 +54,9 @@ export class DiscordStrategyService implements AlertStrategy {
         },
         {
           name: alertStatusCode,
-          value: `${message.statusCode ? message.statusCode : this.unknown}`,
+          value: `${message.statusCode ? message.statusCode : this.unknown}(${
+            message.errorCode ? message.errorCode : this.unknown
+          })`,
           inline: true,
         },
         {
