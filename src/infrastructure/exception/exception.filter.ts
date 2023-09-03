@@ -50,7 +50,8 @@ export class InternalExceptionFilter implements ExceptionFilter {
       errorCode: errorCodeInstance?.errorCode,
       message: errorCodeInstance?.description,
     });
-    await this.alertService.send(resBody);
+    // Do not await this - Performance Issue
+    this.alertService.send(resBody);
 
     httpAdapter.reply(ctx.getResponse(), resBody, statusCode);
   }

@@ -20,8 +20,9 @@ import { AlertModule } from './app/alert/alert.module';
     UlidModule,
     TypeOrmModule.forRootAsync(typeORMConfig),
     AlertModule.forRootConfig({
+      type: 'webhook',
       strategy: 'discord',
-      configKey: 'DISCORD_HOOK',
+      webhookURLConfigKey: 'DISCORD_HOOK',
     }),
     MemberModule,
     AuthenticationModule,
