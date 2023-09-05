@@ -1,14 +1,9 @@
 import { FilteredException } from '@infrastructure/types/type';
 import { AlertStrategy } from './alert.strategy.interface';
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import {
-  EMAIL_PASSWORD_TOKEN,
-  EMAIL_SERVICE_TOKEN,
-  EMAIL_TO_TOKEN,
-  EMAIL_USER_TOKEN,
-} from './alert.token';
-import { AvailableMailService, MailTransportConfig } from './type';
-import mail, { SendMailOptions, createTransport } from 'nodemailer';
+import { ALERT_OPTION } from './alert.token';
+import { AlertMailOption, MailTransportConfig } from './type';
+import { SendMailOptions, createTransport } from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
 import {
   alertDescription,
@@ -18,6 +13,7 @@ import {
   alertTimestamp,
   alertTitle,
   alertTitleHyperlink,
+  getTimeOfNow,
 } from './alert.message';
 
 @Injectable()
@@ -33,15 +29,11 @@ export class EmailStrategyService implements AlertStrategy {
       requireTLS: true,
     },
   };
-  constructor(
-    @Inject(EMAIL_TO_TOKEN) private readonly to: string,
-    @Inject(EMAIL_SERVICE_TOKEN) private readonly service: AvailableMailService,
-    @Inject(EMAIL_USER_TOKEN) private readonly user: string,
-    @Inject(EMAIL_PASSWORD_TOKEN) private readonly pass: string,
-  ) {
-    const transportConfig = EmailStrategyService.transportConfigMapper[service];
+  constructor(@Inject(ALERT_OPTION) private readonly option: AlertMailOption) {
+    const transportConfig =
+      EmailStrategyService.transportConfigMapper[option.service];
     this.transport = createTransport({
-      service,
+      service: option.service,
       port: transportConfig.port,
       host: transportConfig.host,
       secure: transportConfig.secure,
@@ -49,21 +41,22 @@ export class EmailStrategyService implements AlertStrategy {
         ? transportConfig.requireTLS
         : false,
       auth: {
-        user,
-        pass: pass,
+        user: option.auth.user,
+        pass: option.auth.password,
       },
     });
   }
   async send(message: FilteredException): Promise<void> {
     try {
       const sendOption: SendMailOptions = {
-        from: this.user,
-        to: this.to,
+        from: this.option.auth.user,
+        to: this.option.to,
         subject: 'Hongik Univ. DSC Server Alert',
         html: this.getHTML(message),
       };
       await this.transport.sendMail(sendOption);
     } catch (err) {
+      console.error(err);
       this.logger.error(err);
     }
   }
@@ -86,7 +79,7 @@ export class EmailStrategyService implements AlertStrategy {
     }</p>
         <p style="color: #555;">${alertStatusCode} : ${
       message.statusCode ? message.statusCode : this.unknown
-    }(${message.errorCode ? message.errorCode : this.unknown})</p>
+    } (${message.errorCode ? message.errorCode : this.unknown})</p>
         <p style="color: #555;">${alertErrorMessage} : ${
       typeof message?.message === 'object'
         ? JSON.stringify(message?.message)
@@ -94,7 +87,7 @@ export class EmailStrategyService implements AlertStrategy {
         ? message.message
         : this.unknown
     }</p>
-        <p style="color: #555;">${alertTimestamp} : ${new Date().toLocaleString()}</p>
+        <p style="color: #555;">${alertTimestamp} : ${getTimeOfNow()}</p>
     </div>
 </body>
 </html>`;

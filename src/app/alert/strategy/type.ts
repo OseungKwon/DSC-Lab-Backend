@@ -1,3 +1,5 @@
+import { FactoryProvider, ModuleMetadata, Type } from '@nestjs/common';
+
 export type AvailableWebhookStrategy = 'discord' | 'slack';
 export type AvailableMailService = 'gmail';
 
@@ -10,6 +12,7 @@ export type MailTransportConfig = {
   };
 };
 
+/** Type for dynamic module */
 interface WebhookType {
   type: 'webhook';
   strategy: AvailableWebhookStrategy;
@@ -17,10 +20,10 @@ interface WebhookType {
 
 interface MailType {
   type: 'mail';
-  service: AvailableMailService;
 }
 
-export interface MailAlertOption extends MailType {
+export interface AlertMailOption {
+  service: AvailableMailService;
   to: string;
   auth: {
     user: string;
@@ -28,24 +31,32 @@ export interface MailAlertOption extends MailType {
   };
 }
 
-export interface AlertWebhookOption extends WebhookType {
+export interface AlertWebhookOption {
   webhookURL: string;
 }
 
-export interface AlertWebhookOptionConfig extends WebhookType {
-  webhookURLConfigKey: string;
+/** For Root Option */
+export interface WebHookForRootOption extends WebhookType {
+  option: AlertWebhookOption;
 }
 
-export interface MailAlertOptionConfig extends MailType {
-  toConfigKey: string;
-  auth: {
-    userConfigKey: string;
-    passwordConfigKey: string;
-  };
+export interface MailForRootOption extends MailType {
+  option: AlertMailOption;
 }
 
-export type AlertForRootOption = AlertWebhookOption | MailAlertOption;
+/** For Root Async Option */
+export interface WebHookForRootAsyncOption
+  extends WebhookType,
+    Pick<ModuleMetadata, 'imports'>,
+    Pick<FactoryProvider<AlertWebhookOption>, 'inject' | 'useFactory'> {}
 
-export type AlertForRootConfigOptions =
-  | AlertWebhookOptionConfig
-  | MailAlertOptionConfig;
+export interface MailForRootAsyncOption
+  extends MailType,
+    Pick<ModuleMetadata, 'imports'>,
+    Pick<FactoryProvider<AlertMailOption>, 'inject' | 'useFactory'> {}
+
+export type AlertForRootOption = WebHookForRootOption | MailForRootOption;
+
+export type AlertForRootAsyncOption =
+  | WebHookForRootAsyncOption
+  | MailForRootAsyncOption;

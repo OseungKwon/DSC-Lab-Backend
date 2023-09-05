@@ -3,7 +3,7 @@ import { AlertStrategy } from './alert.strategy.interface';
 
 import { EmbedBuilder, WebhookClient } from 'discord.js';
 import { FilteredException } from '@infrastructure/types/type';
-import { ALERT_TOKEN } from './alert.token';
+import { ALERT_OPTION } from './alert.token';
 import {
   alertDescription,
   alertErrorEndpoint,
@@ -15,7 +15,9 @@ import {
   alertTimestamp,
   alertTitle,
   alertTitleHyperlink,
+  getTimeOfNow,
 } from './alert.message';
+import { AlertWebhookOption } from './type';
 
 @Injectable()
 export class DiscordStrategyService implements AlertStrategy {
@@ -23,9 +25,11 @@ export class DiscordStrategyService implements AlertStrategy {
   private logger = new Logger('Discord Alert');
   private unknown = 'UNKNOWN';
 
-  constructor(@Inject(ALERT_TOKEN) private readonly webHookURL: string) {
+  constructor(
+    @Inject(ALERT_OPTION) private readonly option: AlertWebhookOption,
+  ) {
     this.webHookClient = new WebhookClient({
-      url: this.webHookURL,
+      url: this.option.webhookURL,
     });
   }
 
@@ -54,14 +58,14 @@ export class DiscordStrategyService implements AlertStrategy {
         },
         {
           name: alertStatusCode,
-          value: `${message.statusCode ? message.statusCode : this.unknown}(${
+          value: `${message.statusCode ? message.statusCode : this.unknown} (${
             message.errorCode ? message.errorCode : this.unknown
           })`,
           inline: true,
         },
         {
           name: alertTimestamp,
-          value: new Date().toLocaleString(),
+          value: getTimeOfNow(),
           inline: false,
         },
         {
