@@ -1,21 +1,16 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import { DynamicModule, Global, Module } from '@nestjs/common';
 import { AlertService } from './alert.service';
 import {
-  AlertForRootConfigOptions,
+  AlertForRootAsyncOption,
   AlertForRootOption,
   AvailableWebhookStrategy,
 } from './strategy/type';
-import {
-  ALERT_TOKEN,
-  EMAIL_PASSWORD_TOKEN,
-  EMAIL_SERVICE_TOKEN,
-  EMAIL_TO_TOKEN,
-  EMAIL_USER_TOKEN,
-} from './strategy/alert.token';
+import { ALERT_OPTION } from './strategy/alert.token';
 import { SlackStrategyService } from './strategy/slack.strategy';
 import { DiscordStrategyService } from './strategy/discord.strategy';
 import { EmailStrategyService } from './strategy/email.strategy';
 
+@Global()
 @Module({})
 export class AlertModule {
   /** Alert Startegy Injection Token Mapper */
@@ -26,99 +21,45 @@ export class AlertModule {
 
   /** Synchronous For Root Option */
   public static forRoot(option: AlertForRootOption): DynamicModule {
-    // If option is not set as Array Type, Convert to Array Type
-    switch (option.type) {
-      case 'webhook':
-        return {
-          module: AlertModule,
-          providers: [
-            {
-              provide: ALERT_TOKEN,
-              useValue: option.webhookURL,
-            },
-            {
-              provide: AlertService,
-              useClass: AlertModule.tokenMapper[option.strategy],
-            },
-          ],
-          exports: [AlertService],
-        };
-      case 'mail':
-        return {
-          module: AlertModule,
-          providers: [
-            {
-              provide: EMAIL_TO_TOKEN,
-              useValue: option.to,
-            },
-            {
-              provide: EMAIL_SERVICE_TOKEN,
-              useValue: option.service,
-            },
-            {
-              provide: EMAIL_USER_TOKEN,
-              useValue: option.auth.user,
-            },
-            {
-              provide: EMAIL_PASSWORD_TOKEN,
-              useValue: option.auth.password,
-            },
-            {
-              provide: AlertService,
-              useClass: EmailStrategyService,
-            },
-          ],
-          exports: [AlertService],
-        };
-    }
+    return {
+      imports: [],
+      module: AlertModule,
+      providers: [
+        {
+          provide: ALERT_OPTION,
+          useValue: option.option,
+        },
+        {
+          provide: AlertService,
+          useClass:
+            option.type === 'mail'
+              ? EmailStrategyService
+              : AlertModule.tokenMapper[option.strategy],
+        },
+      ],
+      exports: [AlertService],
+    };
   }
 
-  public static forRootConfig(
-    option: AlertForRootConfigOptions,
-  ): DynamicModule {
-    switch (option.type) {
-      case 'webhook':
-        return {
-          module: AlertModule,
-          providers: [
-            {
-              provide: ALERT_TOKEN,
-              useValue: process.env[option.webhookURLConfigKey],
-            },
-            {
-              provide: AlertService,
-              useClass: AlertModule.tokenMapper[option.strategy],
-            },
-          ],
-          exports: [AlertService],
-        };
-      case 'mail':
-        return {
-          module: AlertModule,
-          providers: [
-            {
-              provide: EMAIL_TO_TOKEN,
-              useValue: process.env[option.toConfigKey],
-            },
-            {
-              provide: EMAIL_SERVICE_TOKEN,
-              useValue: option.service,
-            },
-            {
-              provide: EMAIL_USER_TOKEN,
-              useValue: process.env[option.auth.userConfigKey],
-            },
-            {
-              provide: EMAIL_PASSWORD_TOKEN,
-              useValue: process.env[option.auth.passwordConfigKey],
-            },
-            {
-              provide: AlertService,
-              useClass: EmailStrategyService,
-            },
-          ],
-          exports: [AlertService],
-        };
-    }
+  public static forRootAsync(option: AlertForRootAsyncOption): DynamicModule {
+    return {
+      imports: option.imports,
+      module: AlertModule,
+      providers: [
+        {
+          provide: ALERT_OPTION,
+          useFactory: option.useFactory,
+          inject: option.inject,
+        },
+        {
+          provide: AlertService,
+          useClass:
+            option.type === 'mail'
+              ? EmailStrategyService
+              : AlertModule.tokenMapper[option.strategy],
+        },
+      ],
+      exports: [AlertService],
+    };
   }
 }

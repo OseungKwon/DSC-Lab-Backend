@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app/app.controller';
 import { AppService } from './app/app.service';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configOptions } from './module-config/config.config';
 import { LoggerModule } from '@hoplin/nestjs-logger';
 import { UlidModule } from './app/ulid/ulid.module';
@@ -19,10 +19,16 @@ import { AlertModule } from './app/alert/alert.module';
     ConfigModule.forRoot(configOptions),
     UlidModule,
     TypeOrmModule.forRootAsync(typeORMConfig),
-    AlertModule.forRootConfig({
+    AlertModule.forRootAsync({
+      imports: [ConfigModule],
       type: 'webhook',
-      strategy: 'discord',
-      webhookURLConfigKey: 'DISCORD_HOOK',
+      strategy: 'slack',
+      useFactory: async (cfg: ConfigService) => {
+        return {
+          webhookURL: cfg.get<string>('SLACK_HOOK'),
+        };
+      },
+      inject: [ConfigService],
     }),
     MemberModule,
     AuthenticationModule,
