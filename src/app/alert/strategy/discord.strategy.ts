@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { AlertStrategy } from './alert.strategy.interface';
 
-import { EmbedBuilder, WebhookClient } from 'discord.js';
+import { EmbedBuilder, WebhookClient, blockQuote } from 'discord.js';
 import { FilteredException } from '@infrastructure/types/type';
 import { ALERT_OPTION } from './alert.token';
 import {
@@ -10,6 +10,7 @@ import {
   alertErrorMessage,
   alertFooterIconURL,
   alertFooterText,
+  alertStackTrace,
   alertStatusCode,
   alertThumbnail,
   alertTimestamp,
@@ -18,6 +19,7 @@ import {
   getTimeOfNow,
 } from './alert.message';
 import { AlertWebhookOption } from './type';
+import { WebHookURLLost } from '@infrastructure/exception/alert';
 
 @Injectable()
 export class DiscordStrategyService implements AlertStrategy {
@@ -28,6 +30,9 @@ export class DiscordStrategyService implements AlertStrategy {
   constructor(
     @Inject(ALERT_OPTION) private readonly option: AlertWebhookOption,
   ) {
+    if (!option.webhookURL) {
+      throw new WebHookURLLost();
+    }
     this.webHookClient = new WebhookClient({
       url: this.option.webhookURL,
     });
@@ -38,7 +43,6 @@ export class DiscordStrategyService implements AlertStrategy {
       const embed = await this.getEmbed(message);
       await this.webHookClient.send({ embeds: [embed] });
     } catch (err) {
-      console.error(err);
       this.logger.error(err);
     }
   }
@@ -76,6 +80,13 @@ export class DiscordStrategyService implements AlertStrategy {
               : message.message
               ? message.message
               : this.unknown,
+          inline: false,
+        },
+        {
+          name: alertStackTrace,
+          value: message?.stackTrace
+            ? blockQuote(message.stackTrace)
+            : this.unknown,
           inline: false,
         },
       )

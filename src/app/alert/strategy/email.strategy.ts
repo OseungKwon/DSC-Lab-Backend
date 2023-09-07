@@ -9,12 +9,14 @@ import {
   alertDescription,
   alertErrorEndpoint,
   alertErrorMessage,
+  alertStackTrace,
   alertStatusCode,
   alertTimestamp,
   alertTitle,
   alertTitleHyperlink,
   getTimeOfNow,
 } from './alert.message';
+import { EmailInformationLost } from '@infrastructure/exception/alert';
 
 @Injectable()
 export class EmailStrategyService implements AlertStrategy {
@@ -30,6 +32,9 @@ export class EmailStrategyService implements AlertStrategy {
     },
   };
   constructor(@Inject(ALERT_OPTION) private readonly option: AlertMailOption) {
+    if (!(option.to || option.auth.password || option.auth.user)) {
+      throw new EmailInformationLost();
+    }
     const transportConfig =
       EmailStrategyService.transportConfigMapper[option.service];
     this.transport = createTransport({
@@ -56,7 +61,6 @@ export class EmailStrategyService implements AlertStrategy {
       };
       await this.transport.sendMail(sendOption);
     } catch (err) {
-      console.error(err);
       this.logger.error(err);
     }
   }
@@ -88,6 +92,10 @@ export class EmailStrategyService implements AlertStrategy {
         : this.unknown
     }</p>
         <p style="color: #555;">${alertTimestamp} : ${getTimeOfNow()}</p>
+        <p style="color: #555;">${alertStackTrace}</p>
+        <code>
+          ${message.stackTrace ? message.stackTrace : this.unknown}
+        </code>
     </div>
 </body>
 </html>`;

@@ -21,11 +21,15 @@ import { AlertModule } from './app/alert/alert.module';
     TypeOrmModule.forRootAsync(typeORMConfig),
     AlertModule.forRootAsync({
       imports: [ConfigModule],
-      type: 'webhook',
-      strategy: 'slack',
+      type: 'mail',
       useFactory: async (cfg: ConfigService) => {
         return {
-          webhookURL: cfg.get<string>('SLACK_HOOK'),
+          service: 'gmail',
+          to: '',
+          auth: {
+            user: '',
+            password: '',
+          },
         };
       },
       inject: [ConfigService],
