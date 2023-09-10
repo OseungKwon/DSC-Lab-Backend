@@ -20,3 +20,7 @@ export enum CheckType {
   EMAIL = 'email',
   NICKNAME = 'nickname',
 }
+
+export const validateTypeArray: string[] = Object.keys(CheckType).map((x) => {
+  return CheckType[x];
+});

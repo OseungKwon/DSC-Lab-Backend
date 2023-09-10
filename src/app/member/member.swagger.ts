@@ -1,5 +1,6 @@
 import { CommonResponseDto } from '@app/common.response.dto';
 import { MemberEntity } from '@domain/member/member.entity';
+import { AUTHENTICATION_EXCEPTION_MSG } from '@infrastructure/exception/authentication';
 import { MEMBER_EXCEPTION_MSG } from '@infrastructure/exception/member';
 import { FilteredException } from '@infrastructure/types/type';
 import { applyDecorators } from '@nestjs/common';
@@ -12,7 +13,6 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { validateTypeArray } from './filter/validate-type.filter';
-import { AUTHENTICATION_EXCEPTION_MSG } from '@infrastructure/exception/authentication';
 
 export class MemberDocs {
   public static getAll() {

@@ -1,9 +1,10 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { AlertStrategy } from './alert.strategy.interface';
 
-import { EmbedBuilder, WebhookClient, blockQuote } from 'discord.js';
+import { LmdbService } from '@app/lmdb/lmdb.service';
+import { WebHookURLLost } from '@infrastructure/exception/alert';
 import { FilteredException } from '@infrastructure/types/type';
-import { ALERT_OPTION } from './alert.token';
+import { EmbedBuilder, WebhookClient, blockQuote } from 'discord.js';
 import {
   alertDescription,
   alertErrorEndpoint,
@@ -18,8 +19,8 @@ import {
   alertTitleHyperlink,
   getTimeOfNow,
 } from './alert.message';
-import { AlertWebhookOption } from './type';
-import { WebHookURLLost } from '@infrastructure/exception/alert';
+import { ALERT_OPTION } from './alert.token';
+import { AlertWebhookOption, AvailableStrategies } from './type';
 
 @Injectable()
 export class DiscordStrategyService implements AlertStrategy {
@@ -29,6 +30,7 @@ export class DiscordStrategyService implements AlertStrategy {
 
   constructor(
     @Inject(ALERT_OPTION) private readonly option: AlertWebhookOption,
+    private readonly lmdb: LmdbService,
   ) {
     if (!option.webhookURL) {
       throw new WebHookURLLost();
@@ -38,7 +40,7 @@ export class DiscordStrategyService implements AlertStrategy {
     });
   }
 
-  async send(message: FilteredException): Promise<void> {
+  async sendError(message: FilteredException, error: Error): Promise<void> {
     try {
       const embed = await this.getEmbed(message);
       await this.webHookClient.send({ embeds: [embed] });
@@ -94,5 +96,9 @@ export class DiscordStrategyService implements AlertStrategy {
         text: alertFooterText,
         iconURL: alertFooterIconURL,
       });
+  }
+
+  getStrategy(): AvailableStrategies {
+    return 'discord';
   }
 }

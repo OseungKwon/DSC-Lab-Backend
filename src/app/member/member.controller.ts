@@ -1,41 +1,24 @@
+import { CommonResponseDto } from '@app/common.response.dto';
+import { MemberEntity } from '@domain/member/member.entity';
+import { CheckType } from '@domain/member/member.enum';
 import {
   Body,
   Controller,
   DefaultValuePipe,
   Delete,
   Get,
-  Inject,
   Param,
   ParseIntPipe,
   Patch,
   Post,
   Query,
 } from '@nestjs/common';
-import { MemberService } from './member.service';
-import { ConfigType } from '@nestjs/config';
-import {
-  ApiBadRequestResponse,
-  ApiConsumes,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiQuery,
-  ApiTags,
-  ApiUnauthorizedResponse,
-} from '@nestjs/swagger';
-import { CommonResponseDto } from '@app/common.response.dto';
-import { MemberEntity } from '@domain/member/member.entity';
-import { MEMBER_EXCEPTION_MSG } from '@infrastructure/exception/member';
-import {
-  CheckTypeValidationPipe,
-  validateTypeArray,
-} from './filter/validate-type.filter';
-import { CheckType } from '@domain/member/member.enum';
+import { ApiTags } from '@nestjs/swagger';
 import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
-import { AUTHENTICATION_EXCEPTION_MSG } from '@infrastructure/exception/authentication';
-import { FilteredException } from '@infrastructure/types/type';
 import { WithdrawMemberDto } from './dto/withdraw-member.dto';
+import { CheckTypeValidationPipe } from './filter/validate-type.filter';
+import { MemberService } from './member.service';
 import { MemberDocs } from './member.swagger';
 
 @Controller('member')

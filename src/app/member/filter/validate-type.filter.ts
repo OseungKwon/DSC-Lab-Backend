@@ -1,10 +1,6 @@
-import { CheckType } from '@domain/member/member.enum';
+import { CheckType, validateTypeArray } from '@domain/member/member.enum';
 import { UnsupportedValidationType } from '@infrastructure/exception/member';
 import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
-
-export const validateTypeArray: string[] = Object.keys(CheckType).map((x) => {
-  return CheckType[x];
-});
 
 @Injectable()
 export class CheckTypeValidationPipe implements PipeTransform {
@@ -15,3 +11,4 @@ export class CheckTypeValidationPipe implements PipeTransform {
     return value;
   }
 }
+export { validateTypeArray };

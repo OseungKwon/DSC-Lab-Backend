@@ -29,8 +29,7 @@ export class InternalExceptionFilter implements ExceptionFilter {
     const statusCode =
       exception instanceof HttpException ? exception.getStatus() : 500;
     // Get stack trace
-    const stackTrace =
-      exception instanceof Error ? exception?.stack : undefined;
+    const stackTrace = exception?.stack;
 
     let errorCodeInstance: ErrorCode;
     /**
@@ -55,7 +54,7 @@ export class InternalExceptionFilter implements ExceptionFilter {
       stackTrace,
     });
     // Do not await this - Performance Issue
-    this.alertService.send(resBody);
+    this.alertService.sendError(resBody, exception);
 
     httpAdapter.reply(ctx.getResponse(), resBody, statusCode);
   }

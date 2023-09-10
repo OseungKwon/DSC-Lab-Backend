@@ -1,9 +1,8 @@
-import { IncomingWebhook } from '@slack/webhook';
-import { AlertStrategy } from './alert.strategy.interface';
-import { Injectable, Inject, Logger } from '@nestjs/common';
+import { WebHookURLLost } from '@infrastructure/exception/alert';
 import { FilteredException } from '@infrastructure/types/type';
-import { ALERT_OPTION } from './alert.token';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { MessageAttachment } from '@slack/types';
+import { IncomingWebhook } from '@slack/webhook';
 import {
   alertDescription,
   alertErrorEndpoint,
@@ -18,8 +17,10 @@ import {
   alertTitleHyperlink,
   getTimeOfNow,
 } from './alert.message';
-import { AlertWebhookOption } from './type';
-import { WebHookURLLost } from '@infrastructure/exception/alert';
+import { AlertStrategy } from './alert.strategy.interface';
+import { ALERT_OPTION } from './alert.token';
+import { AlertWebhookOption, AvailableStrategies } from './type';
+import { LmdbService } from '@app/lmdb/lmdb.service';
 
 @Injectable()
 export class SlackStrategyService implements AlertStrategy {
@@ -29,6 +30,7 @@ export class SlackStrategyService implements AlertStrategy {
 
   constructor(
     @Inject(ALERT_OPTION) private readonly option: AlertWebhookOption,
+    private readonly lmdb: LmdbService,
   ) {
     if (!option.webhookURL) {
       throw new WebHookURLLost();
@@ -36,7 +38,7 @@ export class SlackStrategyService implements AlertStrategy {
     this.webhook = new IncomingWebhook(this.option.webhookURL);
   }
 
-  async send(message: FilteredException): Promise<void> {
+  async sendError(message: FilteredException, error: Error): Promise<void> {
     try {
       const attachment = this.getAttachement(message);
       await this.webhook.send({ attachments: [attachment] });
@@ -93,5 +95,9 @@ export class SlackStrategyService implements AlertStrategy {
       footer_icon: alertFooterIconURL,
     };
     return attachement;
+  }
+
+  getStrategy(): AvailableStrategies {
+    return 'slack';
   }
 }

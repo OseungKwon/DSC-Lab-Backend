@@ -1,5 +1,7 @@
 import { FilteredException } from '@infrastructure/types/type';
+import { AvailableStrategies } from './type';
 
 export interface AlertStrategy {
-  send(message: FilteredException): Promise<void>;
+  sendError(message: FilteredException, error: Error): Promise<void>;
+  getStrategy(): AvailableStrategies;
 }
