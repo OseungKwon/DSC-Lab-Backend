@@ -1,25 +1,22 @@
+import { LoggerModule } from '@hoplin/nestjs-logger';
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AlertModule } from './app/alert/alert.module';
 import { AppController } from './app/app.controller';
 import { AppService } from './app/app.service';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { configOptions } from './module-config/config.config';
-import { LoggerModule } from '@hoplin/nestjs-logger';
-import { UlidModule } from './app/ulid/ulid.module';
-import { LoggerModuleConfig } from './module-config/logger.config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { typeORMConfig } from './module-config/typeorm.config';
-import { MemberModule } from './app/member/member.module';
 import { AuthenticationModule } from './app/authentication/authentication.module';
 import { AuthorizationModule } from './app/authorization/authorization.module';
-import { AlertModule } from './app/alert/alert.module';
 import { LmdbModule } from './app/lmdb/lmdb.module';
+import { UlidModule } from './app/ulid/ulid.module';
+import { configOptions } from './module-config/config.config';
+import { LoggerModuleConfig } from './module-config/logger.config';
+import { PrismaModule } from './app/prisma/prisma.module';
 
 @Module({
   imports: [
     LoggerModule.forRoot(LoggerModuleConfig),
     ConfigModule.forRoot(configOptions),
     UlidModule,
-    TypeOrmModule.forRootAsync(typeORMConfig),
     LmdbModule,
     AlertModule.forRootAsync({
       imports: [ConfigModule],
@@ -36,10 +33,10 @@ import { LmdbModule } from './app/lmdb/lmdb.module';
       },
       inject: [ConfigService],
     }),
-    MemberModule,
     AuthenticationModule,
     AuthorizationModule,
     AlertModule,
+    PrismaModule,
   ],
   controllers: [AppController],
   providers: [AppService],

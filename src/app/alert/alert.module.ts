@@ -1,5 +1,5 @@
 import { DynamicModule, Global, Module } from '@nestjs/common';
-import { AlertService } from './alert.service';
+import { AlertService } from './alert.strategy.interface';
 import {
   AlertForRootAsyncOption,
   AlertForRootOption,

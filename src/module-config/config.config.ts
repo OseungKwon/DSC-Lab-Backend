@@ -11,8 +11,6 @@ import paginationConfig from 'src/config/config/pagination.config';
 export const configOptions: ConfigModuleOptions = {
   isGlobal: true,
   cache: true,
-  envFilePath: `${__dirname}/../config/env/${
-    process.env.API_MODE || 'dev'
-  }.env`,
+  envFilePath: `${process.env.API_MODE || 'dev'}.env`,
   load: [databaseConfig, paginationConfig],
 };

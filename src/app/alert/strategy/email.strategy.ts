@@ -1,9 +1,9 @@
-import { LmdbService } from '@app/lmdb/lmdb.service';
 import { EmailInformationLost } from '@infrastructure/exception/alert';
 import { FilteredException } from '@infrastructure/types/type';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { SendMailOptions, createTransport } from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
+import { AlertService } from '../alert.strategy.interface';
 import {
   alertDescription,
   alertErrorEndpoint,
@@ -15,7 +15,6 @@ import {
   alertTitleHyperlink,
   getTimeOfNow,
 } from './alert.message';
-import { AlertStrategy } from './alert.strategy.interface';
 import { ALERT_OPTION } from './alert.token';
 import {
   AlertMailOption,
@@ -24,7 +23,7 @@ import {
 } from './type';
 
 @Injectable()
-export class EmailStrategyService implements AlertStrategy {
+export class EmailStrategyService extends AlertService {
   private transport: Mail;
   private unknown = 'UNKNOWN';
   private logger = new Logger('Mail Alert');
@@ -36,10 +35,8 @@ export class EmailStrategyService implements AlertStrategy {
       requireTLS: true,
     },
   };
-  constructor(
-    @Inject(ALERT_OPTION) private readonly option: AlertMailOption,
-    private readonly lmdb: LmdbService,
-  ) {
+  constructor(@Inject(ALERT_OPTION) private readonly option: AlertMailOption) {
+    super();
     if (!(option.to || option.auth.password || option.auth.user)) {
       throw new EmailInformationLost();
     }
@@ -59,7 +56,7 @@ export class EmailStrategyService implements AlertStrategy {
       },
     });
   }
-  async sendError(message: FilteredException, error: Error): Promise<void> {
+  async sendError(message: FilteredException): Promise<void> {
     try {
       const sendOption: SendMailOptions = {
         from: this.option.auth.user,

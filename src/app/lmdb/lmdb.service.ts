@@ -27,7 +27,7 @@ export class LmdbService {
     });
   }
 
-  public async remove(key): Promise<boolean> {
+  public async remove(key: string): Promise<boolean> {
     return await this.db.transaction(() => {
       return this.db.remove(key);
     });

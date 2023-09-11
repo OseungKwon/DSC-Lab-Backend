@@ -1,4 +1,4 @@
-import { AlertService } from '@app/alert/alert.service';
+import { AlertService } from '@app/alert/alert.strategy.interface';
 import { ErrorCode, FilteredException } from '@infrastructure/types/type';
 import {
   ArgumentsHost,
@@ -54,7 +54,7 @@ export class InternalExceptionFilter implements ExceptionFilter {
       stackTrace,
     });
     // Do not await this - Performance Issue
-    this.alertService.sendError(resBody, exception);
+    this.alertService.sendError(resBody);
 
     httpAdapter.reply(ctx.getResponse(), resBody, statusCode);
   }

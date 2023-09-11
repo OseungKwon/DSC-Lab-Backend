@@ -1,15 +1,15 @@
 version: '3.7'
 services:
   db:
-    container_name: database
-    image: mysql:8.0
+    container_name: dsc-be-db
+    image: mongo
     ports:
-      - '3306:3306'
+      - '27017:27017'
     restart: 'unless-stopped'
     environment:
-      - MYSQL_ROOT_PASSWORD=hoplin1234!
-      - MYSQL_ROOT_HOST=%
-      - MYSQL_DATABASE=dsc
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=password1234!
+      - MONGO_INITDB_DATABASE=dsc-be
     networks:
       - backend-network
 networks:

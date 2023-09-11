@@ -1,12 +1,10 @@
-import { HttpAdapterHost, NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import * as dotenv from 'dotenv';
-import { SwaggerModule } from '@nestjs/swagger';
-import swaggerConfig from '@infrastructure/swagger/swagger.config';
+import { AlertService } from '@app/alert/alert.strategy.interface';
 import { InternalExceptionFilter } from '@infrastructure/exception/exception.filter';
-import { ConfigService } from '@nestjs/config';
+import swaggerConfig from '@infrastructure/swagger/swagger.config';
 import { ValidationPipe } from '@nestjs/common';
-import { AlertService } from '@app/alert/alert.service';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import { SwaggerModule } from '@nestjs/swagger';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   // Nest.js Http REST Service
