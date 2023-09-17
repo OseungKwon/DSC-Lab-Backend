@@ -1,17 +1,19 @@
-version: '3.7'
+version: '3.8'
 services:
-  db:
-    container_name: dsc-be-db
+  mongo-master:
+    container_name: mongo-master
     image: mongo
-    ports:
-      - '27017:27017'
-    restart: 'unless-stopped'
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=password1234!
-      - MONGO_INITDB_DATABASE=dsc-be
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password1234!
+      MONGO_INITDB_DATABASE: dsc-be
+    ports:
+      - 27017:27017
     networks:
-      - backend-network
+      - mongo-replica
+    volumes:
+      - ./replica/db-master:/data/db
+    restart: always
 networks:
-  backend-network:
+  mongo-replica:
     driver: bridge

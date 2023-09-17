@@ -1,6 +1,6 @@
 import { AlertService } from '@app/alert/alert.strategy.interface';
 import { InternalExceptionFilter } from '@infrastructure/exception/exception.filter';
-import swaggerConfig from '@infrastructure/swagger/swagger.config';
+import { SwaggerDefinition } from '@infrastructure/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { SwaggerModule } from '@nestjs/swagger';
@@ -18,9 +18,9 @@ async function bootstrap() {
   );
   app.useGlobalPipes(new ValidationPipe());
   // Swagger document
-  const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('docs', app, document);
-  await app.startAllMicroservices();
-  await app.listen(3000);
+  const { config, options } = SwaggerDefinition();
+  const document = SwaggerModule.createDocument(app, config.build());
+  SwaggerModule.setup('docs', app, document, options);
+  await app.listen(5000);
 }
 bootstrap();
