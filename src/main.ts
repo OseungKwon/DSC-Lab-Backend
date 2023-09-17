@@ -1,12 +1,10 @@
-import { HttpAdapterHost, NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import * as dotenv from 'dotenv';
-import { SwaggerModule } from '@nestjs/swagger';
-import swaggerConfig from '@infrastructure/swagger/swagger.config';
+import { AlertService } from '@app/alert/alert.strategy.interface';
 import { InternalExceptionFilter } from '@infrastructure/exception/exception.filter';
-import { ConfigService } from '@nestjs/config';
+import { SwaggerDefinition } from '@infrastructure/swagger';
 import { ValidationPipe } from '@nestjs/common';
-import { AlertService } from '@app/alert/alert.service';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import { SwaggerModule } from '@nestjs/swagger';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   // Nest.js Http REST Service
@@ -20,9 +18,9 @@ async function bootstrap() {
   );
   app.useGlobalPipes(new ValidationPipe());
   // Swagger document
-  const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('docs', app, document);
-  await app.startAllMicroservices();
-  await app.listen(3000);
+  const { config, options } = SwaggerDefinition();
+  const document = SwaggerModule.createDocument(app, config.build());
+  SwaggerModule.setup('docs', app, document, options);
+  await app.listen(5000);
 }
 bootstrap();

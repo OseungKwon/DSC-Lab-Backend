@@ -1,4 +1,4 @@
-import { AlertService } from '@app/alert/alert.service';
+import { AlertService } from '@app/alert/alert.strategy.interface';
 import { ErrorCode, FilteredException } from '@infrastructure/types/type';
 import {
   ArgumentsHost,
@@ -28,6 +28,8 @@ export class InternalExceptionFilter implements ExceptionFilter {
     // Get error response status code
     const statusCode =
       exception instanceof HttpException ? exception.getStatus() : 500;
+    // Get stack trace
+    const stackTrace = exception?.stack;
 
     let errorCodeInstance: ErrorCode;
     /**
@@ -49,9 +51,10 @@ export class InternalExceptionFilter implements ExceptionFilter {
       statusCode,
       errorCode: errorCodeInstance?.errorCode,
       message: errorCodeInstance?.description,
+      stackTrace,
     });
     // Do not await this - Performance Issue
-    this.alertService.send(resBody);
+    this.alertService.sendError(resBody);
 
     httpAdapter.reply(ctx.getResponse(), resBody, statusCode);
   }

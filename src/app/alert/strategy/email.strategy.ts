@@ -1,23 +1,29 @@
+import { EmailInformationLost } from '@infrastructure/exception/alert';
 import { FilteredException } from '@infrastructure/types/type';
-import { AlertStrategy } from './alert.strategy.interface';
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { ALERT_OPTION } from './alert.token';
-import { AlertMailOption, MailTransportConfig } from './type';
 import { SendMailOptions, createTransport } from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
+import { AlertService } from '../alert.strategy.interface';
 import {
   alertDescription,
   alertErrorEndpoint,
   alertErrorMessage,
+  alertStackTrace,
   alertStatusCode,
   alertTimestamp,
   alertTitle,
   alertTitleHyperlink,
   getTimeOfNow,
 } from './alert.message';
+import { ALERT_OPTION } from './alert.token';
+import {
+  AlertMailOption,
+  AvailableStrategies,
+  MailTransportConfig,
+} from './type';
 
 @Injectable()
-export class EmailStrategyService implements AlertStrategy {
+export class EmailStrategyService extends AlertService {
   private transport: Mail;
   private unknown = 'UNKNOWN';
   private logger = new Logger('Mail Alert');
@@ -30,6 +36,10 @@ export class EmailStrategyService implements AlertStrategy {
     },
   };
   constructor(@Inject(ALERT_OPTION) private readonly option: AlertMailOption) {
+    super();
+    if (!(option.to || option.auth.password || option.auth.user)) {
+      throw new EmailInformationLost();
+    }
     const transportConfig =
       EmailStrategyService.transportConfigMapper[option.service];
     this.transport = createTransport({
@@ -46,7 +56,7 @@ export class EmailStrategyService implements AlertStrategy {
       },
     });
   }
-  async send(message: FilteredException): Promise<void> {
+  async sendError(message: FilteredException): Promise<void> {
     try {
       const sendOption: SendMailOptions = {
         from: this.option.auth.user,
@@ -56,7 +66,6 @@ export class EmailStrategyService implements AlertStrategy {
       };
       await this.transport.sendMail(sendOption);
     } catch (err) {
-      console.error(err);
       this.logger.error(err);
     }
   }
@@ -88,8 +97,16 @@ export class EmailStrategyService implements AlertStrategy {
         : this.unknown
     }</p>
         <p style="color: #555;">${alertTimestamp} : ${getTimeOfNow()}</p>
+        <p style="color: #555;">${alertStackTrace}</p>
+        <code>
+          ${message.stackTrace ? message.stackTrace : this.unknown}
+        </code>
     </div>
 </body>
 </html>`;
+  }
+
+  getStrategy(): AvailableStrategies {
+    return 'gmail';
   }
 }

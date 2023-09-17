@@ -15,12 +15,18 @@ export class ErrorCode {
 export class FilteredException {
   @ApiProperty()
   endpoint: string;
+
   @ApiProperty()
   statusCode: number;
+
   @ApiProperty()
   errorCode: number;
+
   @ApiProperty()
   message: any;
+
+  @ApiProperty()
+  stackTrace?: string;
 
   constructor(data: FilteredException) {
     Object.assign(this, data);

@@ -1,0 +1,35 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+
+model ErrorLog{
+  
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  endpoint String 
+  info     ErrorInfo[]
+
+  @@map("error_log")
+}
+
+
+type ErrorInfo{
+  // This field is for api versioning : optional
+  version          Int? @default(1)
+  // Http Method of error
+  http_method      String
+  // Status Code
+  status_code      Int  
+  // Application Code : optional
+  application_code Int?
+  // Stack Trace
+  stack_trace      String
+}

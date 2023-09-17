@@ -1,15 +1,16 @@
-import { IncomingWebhook } from '@slack/webhook';
-import { AlertStrategy } from './alert.strategy.interface';
-import { Injectable, Inject } from '@nestjs/common';
+import { WebHookURLLost } from '@infrastructure/exception/alert';
 import { FilteredException } from '@infrastructure/types/type';
-import { ALERT_OPTION } from './alert.token';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { MessageAttachment } from '@slack/types';
+import { IncomingWebhook } from '@slack/webhook';
+import { AlertService } from '../alert.strategy.interface';
 import {
   alertDescription,
   alertErrorEndpoint,
   alertErrorMessage,
   alertFooterIconURL,
   alertFooterText,
+  alertStackTrace,
   alertStatusCode,
   alertThumbnail,
   alertTimestamp,
@@ -17,22 +18,32 @@ import {
   alertTitleHyperlink,
   getTimeOfNow,
 } from './alert.message';
-import { AlertWebhookOption } from './type';
+import { ALERT_OPTION } from './alert.token';
+import { AlertWebhookOption, AvailableStrategies } from './type';
 
 @Injectable()
-export class SlackStrategyService implements AlertStrategy {
+export class SlackStrategyService extends AlertService {
   private webhook: IncomingWebhook;
   private unknown = 'UNKNOWN';
+  private logger = new Logger('Slack Alert');
 
   constructor(
     @Inject(ALERT_OPTION) private readonly option: AlertWebhookOption,
   ) {
+    super();
+    if (!option.webhookURL) {
+      throw new WebHookURLLost();
+    }
     this.webhook = new IncomingWebhook(this.option.webhookURL);
   }
 
-  async send(message: FilteredException): Promise<void> {
-    const attachment = this.getAttachement(message);
-    await this.webhook.send({ attachments: [attachment] });
+  async sendError(message: FilteredException): Promise<void> {
+    try {
+      const attachment = this.getAttachement(message);
+      await this.webhook.send({ attachments: [attachment] });
+    } catch (err) {
+      this.logger.error(err);
+    }
   }
 
   private getAttachement(message: FilteredException): MessageAttachment {
@@ -71,10 +82,21 @@ export class SlackStrategyService implements AlertStrategy {
               : this.unknown,
           short: false,
         },
+        {
+          title: alertStackTrace,
+          value: message.stackTrace
+            ? `\`\`\`${message.stackTrace}\`\`\``
+            : this.unknown,
+          short: false,
+        },
       ],
       footer: alertFooterText,
       footer_icon: alertFooterIconURL,
     };
     return attachement;
+  }
+
+  getStrategy(): AvailableStrategies {
+    return 'slack';
   }
 }

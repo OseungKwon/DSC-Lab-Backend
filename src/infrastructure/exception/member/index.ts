@@ -1,6 +1,5 @@
-import { validateTypeArray } from '@app/member/filter/validate-type.filter';
-import { ErrorCode, ErrorObject } from '@infrastructure/types/type';
-import { BadRequestException, HttpException } from '@nestjs/common';
+import { ErrorCode } from '@infrastructure/types/type';
+import { BadRequestException } from '@nestjs/common';
 
 export const MEMBER_EXCEPTION_MSG = {
   MemberNotFound: new ErrorCode(1000, 'MEMBER_NOT_FOUND'),
@@ -8,7 +7,7 @@ export const MEMBER_EXCEPTION_MSG = {
   NicknameUnavailable: new ErrorCode(1002, 'NICKNAME_UNAVAILABLE'),
   UnsupportedValidationType: new ErrorCode(
     1003,
-    `VALIDATION_TYPE_SHOULD_BE_ONE_OF_'${validateTypeArray.join(', ')}'`,
+    `VALIDATION_TYPE_SHOULD_BE_ONE_OF_`,
   ),
 };
 

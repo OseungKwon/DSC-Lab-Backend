@@ -1,15 +1,16 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { AlertStrategy } from './alert.strategy.interface';
+import { AlertService } from '../alert.strategy.interface';
 
-import { EmbedBuilder, WebhookClient } from 'discord.js';
+import { WebHookURLLost } from '@infrastructure/exception/alert';
 import { FilteredException } from '@infrastructure/types/type';
-import { ALERT_OPTION } from './alert.token';
+import { EmbedBuilder, WebhookClient, blockQuote } from 'discord.js';
 import {
   alertDescription,
   alertErrorEndpoint,
   alertErrorMessage,
   alertFooterIconURL,
   alertFooterText,
+  alertStackTrace,
   alertStatusCode,
   alertThumbnail,
   alertTimestamp,
@@ -17,10 +18,11 @@ import {
   alertTitleHyperlink,
   getTimeOfNow,
 } from './alert.message';
-import { AlertWebhookOption } from './type';
+import { ALERT_OPTION } from './alert.token';
+import { AlertWebhookOption, AvailableStrategies } from './type';
 
 @Injectable()
-export class DiscordStrategyService implements AlertStrategy {
+export class DiscordStrategyService extends AlertService {
   private webHookClient: WebhookClient;
   private logger = new Logger('Discord Alert');
   private unknown = 'UNKNOWN';
@@ -28,17 +30,20 @@ export class DiscordStrategyService implements AlertStrategy {
   constructor(
     @Inject(ALERT_OPTION) private readonly option: AlertWebhookOption,
   ) {
+    super();
+    if (!option.webhookURL) {
+      throw new WebHookURLLost();
+    }
     this.webHookClient = new WebhookClient({
       url: this.option.webhookURL,
     });
   }
 
-  async send(message: FilteredException): Promise<void> {
+  async sendError(message: FilteredException): Promise<void> {
     try {
       const embed = await this.getEmbed(message);
       await this.webHookClient.send({ embeds: [embed] });
     } catch (err) {
-      console.error(err);
       this.logger.error(err);
     }
   }
@@ -78,10 +83,21 @@ export class DiscordStrategyService implements AlertStrategy {
               : this.unknown,
           inline: false,
         },
+        {
+          name: alertStackTrace,
+          value: message?.stackTrace
+            ? blockQuote(message.stackTrace)
+            : this.unknown,
+          inline: false,
+        },
       )
       .setFooter({
         text: alertFooterText,
         iconURL: alertFooterIconURL,
       });
+  }
+
+  getStrategy(): AvailableStrategies {
+    return 'discord';
   }
 }

@@ -14,6 +14,7 @@ export const alertFooterText = 'Developed by Hoplin';
 export const alertTimestamp = 'Logged Time Stamp';
 export const alertFooterIconURL =
   'https://avatars.githubusercontent.com/u/45956041?v=4';
+export const alertStackTrace = 'Stack Trace';
 
 const defaultTimeFormat = 'yyyy년 MM월 dd일 HH:mm:ss';
 export const getTimeOfNow = () => {

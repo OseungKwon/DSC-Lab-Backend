@@ -1,19 +1,20 @@
-import { SwaggerTags } from '@infrastructure/swagger/swagger.tags';
-import { DocumentBuilder } from '@nestjs/swagger';
+import { DocumentBuilder, SwaggerCustomOptions } from '@nestjs/swagger';
 
-const documentConfig = new DocumentBuilder()
-  .setTitle('DSC lab backend')
-  .setDescription('Hongik University DSC Backoffice')
-  .setVersion('1.0')
-  .setContact(
-    'Hoplin',
-    'https://github.com/J-hoplin1/DSC-Lab-Backend',
-    'jhoplin7259@gmail.com',
-  )
-  .addBearerAuth();
+export const SwaggerDefinition = () => {
+  const config: DocumentBuilder = new DocumentBuilder()
+    .setTitle('DSC Backoffice')
+    .setDescription('Basckoffice API')
+    .setVersion('1.0');
 
-Object.keys(SwaggerTags).forEach((x: string) => {
-  documentConfig.addTag(x, SwaggerTags[x]);
-});
+  const options: SwaggerCustomOptions = {
+    explorer: true,
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+  };
 
-export default documentConfig.build();
+  return {
+    config,
+    options,
+  };
+};

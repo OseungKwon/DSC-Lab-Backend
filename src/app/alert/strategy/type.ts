@@ -3,6 +3,10 @@ import { FactoryProvider, ModuleMetadata, Type } from '@nestjs/common';
 export type AvailableWebhookStrategy = 'discord' | 'slack';
 export type AvailableMailService = 'gmail';
 
+export type AvailableStrategies =
+  | AvailableMailService
+  | AvailableWebhookStrategy;
+
 export type MailTransportConfig = {
   [k in AvailableMailService]: {
     port: number;
