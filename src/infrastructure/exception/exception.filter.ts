@@ -17,6 +17,7 @@ export class InternalExceptionFilter implements ExceptionFilter {
   ) {}
 
   async catch(exception: any, host: ArgumentsHost) {
+    console.error(exception);
     const { httpAdapter } = this.httpAdapterHost;
 
     const ctx = host.switchToHttp();
