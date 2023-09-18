@@ -1,6 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { applyDecorators } from '@nestjs/common';
 
 export type SwaggerTag = Record<string, string>;
+
+export type JwtPayload = {
+  id: string;
+  email: string;
+};
 
 export class ErrorCode {
   errorCode: number;
@@ -36,3 +42,14 @@ export class FilteredException {
 export type ErrorObject = {
   [P: string]: ErrorCode;
 };
+
+export type SwaggerObject<
+  T extends object,
+  K = ReturnType<typeof applyDecorators>,
+> = {
+  [k in keyof (T & {
+    Controller?: K;
+  })]: K;
+};
+
+export type CommonReturnType = Promise<ReturnType<any>> | ReturnType<any>;

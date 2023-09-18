@@ -11,6 +11,67 @@ datasource db {
 }
 
 
+model Assistant{
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+
+  name        String
+
+  password    String
+
+  email       String @unique()
+
+  type        AssistantType
+
+  createdAt    DateTime @default(now())
+
+  updatedAt    DateTime @updatedAt
+
+
+  @@map("assistants")
+}
+
+
+enum AssistantType {
+  OfficeAssistant
+  LabAssistant
+}
+
+model User{
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  name         String
+
+  password     String 
+  
+  email        String @unique() 
+  
+  groupId     String @unique() // 학번
+  
+  role         MemberRole       // Role
+
+  status       Status   @default(Pending) // 회원 승인 여부
+
+  enrolledIn   DateTime @default(now()) // Time user enrolled
+
+  createdAt    DateTime @default(now())
+
+  updatedAt    DateTime @updatedAt
+
+  @@map("members")
+}
+
+enum MemberRole {
+  Student
+  Professor 
+}
+
+enum Status {
+  Pending
+  Approved
+  Reject 
+}
+
+
 model ErrorLog{
   
   id       String @id @default(auto()) @map("_id") @db.ObjectId

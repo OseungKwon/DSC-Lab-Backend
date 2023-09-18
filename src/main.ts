@@ -12,7 +12,6 @@ async function bootstrap() {
   const alertService = app.get<AlertService>(AlertService);
   // Nest Application config
   app.enableCors();
-  app.setGlobalPrefix('v1');
   app.useGlobalFilters(
     new InternalExceptionFilter(app.get(HttpAdapterHost), alertService),
   );
@@ -21,6 +20,7 @@ async function bootstrap() {
   const { config, options } = SwaggerDefinition();
   const document = SwaggerModule.createDocument(app, config.build());
   SwaggerModule.setup('docs', app, document, options);
-  await app.listen(5000);
+
+  await app.listen(5500);
 }
 bootstrap();
