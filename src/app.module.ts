@@ -1,5 +1,5 @@
 import { LoggerModule } from '@hoplin/nestjs-logger';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AlertModule } from './app/alert/alert.module';
 import { AppController } from './app/app.controller';
@@ -11,6 +11,7 @@ import { UlidModule } from './app/ulid/ulid.module';
 import { configOptions } from './module-config/config.config';
 import { LoggerModuleConfig } from './module-config/logger.config';
 import { PrismaModule } from './app/prisma/prisma.module';
+import { DevOnlyMiddleware } from '@app/middlewares';
 
 @Module({
   imports: [
@@ -41,4 +42,9 @@ import { PrismaModule } from './app/prisma/prisma.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  /** Controller in AppController is available only in dev mode */
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(DevOnlyMiddleware).forRoutes(AppController);
+  }
+}
