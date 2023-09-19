@@ -1,24 +1,20 @@
-import { Controller, Get, InternalServerErrorException } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Get } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PrismaService } from './prisma/prisma.service';
 
 @Controller()
+@ApiTags('Development Utility')
 export class AppController {
-  constructor(
-    private readonly appService: AppService,
-    private readonly prisma: PrismaService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-  @Get()
-  getHello() {
-    this.prisma.$transaction([
-      this.prisma.errorLog.create({
-        data: {
-          endpoint: 'aa',
-        },
-      }),
+  @Get('cleandb')
+  @ApiOperation({
+    description: 'Clear all database. This is for development mode only',
+  })
+  public async cleanDB() {
+    await this.prisma.$transaction([
+      this.prisma.user.deleteMany(),
+      this.prisma.assistant.deleteMany(),
     ]);
-    return true;
-    // return this.appService.getHello();
   }
 }

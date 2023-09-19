@@ -3,28 +3,29 @@ import { MemberRole } from '@prisma/client';
 import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 
 export class UserSignUpDto {
-  @ApiProperty()
+  @ApiProperty({ example: 'student' })
   @IsString()
   @IsNotEmpty()
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'password' })
   @IsString()
   @IsNotEmpty()
   password: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'member@gmail.com' })
   @IsEmail()
   @IsNotEmpty()
   email: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'B8890??' })
   @IsString()
   @IsNotEmpty()
   groupId: string;
 
   @ApiProperty({
     enum: MemberRole,
+    example: MemberRole.Student,
   })
   @IsEnum(MemberRole)
   @IsNotEmpty()
