@@ -53,7 +53,7 @@ export class AssistantAuthService implements AssistantAuthInterface {
     const { email, password } = dto;
     let findAssistant: Assistant;
     try {
-      findAssistant = await this.prisma.assistant.findUnique({
+      findAssistant = await this.prisma.assistant.findUniqueOrThrow({
         where: {
           email,
         },
