@@ -5,8 +5,8 @@ import {
 } from '@nestjs/common';
 import { MemberAuthInterface } from './auth.interface';
 import { PrismaService } from '@app/prisma/prisma.service';
-import { UserSignUpDto } from './dto/sign-up.dto';
-import { UserSignInDto } from './dto/sign-in.dto';
+import { MemberSignUpDto } from './dto/sign-up.dto';
+import { MemberSignInDto } from './dto/sign-in.dto';
 import { AuthResponse } from './response/auth.response';
 import { JwtPayload } from '@infrastructure/types/type';
 import { JwtService } from '@nestjs/jwt';
@@ -23,7 +23,7 @@ export class MemberService implements MemberAuthInterface {
     private config: ConfigService,
   ) {}
 
-  async signup(dto: UserSignUpDto) {
+  async signup(dto: MemberSignUpDto) {
     const findAvailable = await this.prisma.user.findMany({
       where: {
         OR: [
@@ -56,11 +56,11 @@ export class MemberService implements MemberAuthInterface {
     return this.getToken(id, email);
   }
 
-  async singin(dto: UserSignInDto) {
+  async singin(dto: MemberSignInDto) {
     const { email, password } = dto;
     let findUser: User;
     try {
-      findUser = await this.prisma.user.findUnique({
+      findUser = await this.prisma.user.findUniqueOrThrow({
         where: {
           email,
         },

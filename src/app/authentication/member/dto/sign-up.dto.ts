@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { MemberRole } from '@prisma/client';
 import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 
-export class UserSignUpDto {
+export class MemberSignUpDto {
   @ApiProperty({ example: 'student' })
   @IsString()
   @IsNotEmpty()
