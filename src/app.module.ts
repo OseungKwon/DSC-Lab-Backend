@@ -6,7 +6,6 @@ import { AppController } from './app/app.controller';
 import { AppService } from './app/app.service';
 import { AuthenticationModule } from './app/authentication/authentication.module';
 import { AuthorizationModule } from './app/authorization/authorization.module';
-import { LmdbModule } from './app/lmdb/lmdb.module';
 import { UlidModule } from './app/ulid/ulid.module';
 import { configOptions } from './module-config/config.config';
 import { LoggerModuleConfig } from './module-config/logger.config';
@@ -18,7 +17,6 @@ import { DevOnlyMiddleware } from '@app/middlewares';
     LoggerModule.forRoot(LoggerModuleConfig),
     ConfigModule.forRoot(configOptions),
     UlidModule,
-    LmdbModule,
     AlertModule.forRootAsync({
       imports: [ConfigModule],
       type: 'mail',
