@@ -7,6 +7,7 @@ import { MemberSignUpDto } from '@app/authentication/member/dto/sign-up.dto';
 
 export const User1SignUpDto: MemberSignUpDto = {
   name: 'hoplin',
+  nickname: 'nickname',
   password: 'password1234!',
   email: 'jhoplin7259@gmail.com',
   groupId: 'B889047',
@@ -20,9 +21,10 @@ export const User1SignInDto: MemberSignInDto = {
 
 export const Assistant1SingUpDto: AssistantSignUpDto = {
   name: 'assistant1',
+  nickname: 'nickname',
   password: 'password',
   email: 'assist@hongik.ac.kr',
-  type: 'OfficeAssistant',
+  role: 'OfficeAssistant',
 };
 
 export const Assistant1SignInDto: AssistantSignInDto = {

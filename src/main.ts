@@ -15,7 +15,11 @@ async function bootstrap() {
   app.useGlobalFilters(
     new InternalExceptionFilter(app.get(HttpAdapterHost), alertService),
   );
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+    }),
+  );
   // Swagger document
   const { config, options } = SwaggerDefinition();
   const document = SwaggerModule.createDocument(app, config.build());

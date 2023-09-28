@@ -43,6 +43,7 @@ import { DevOnlyMiddleware } from '@app/middlewares';
 export class AppModule implements NestModule {
   /** Controller in AppController is available only in dev mode */
   configure(consumer: MiddlewareConsumer) {
+    console.log(process.env.MODE);
     consumer.apply(DevOnlyMiddleware).forRoutes(AppController);
   }
 }

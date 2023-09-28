@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { AssistantType } from '@prisma/client';
+import { AssistantRole } from '@prisma/client';
 import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 
 export class AssistantSignUpDto {
@@ -7,6 +7,11 @@ export class AssistantSignUpDto {
   @IsString()
   @IsNotEmpty()
   name: string;
+
+  @ApiProperty({ example: 'nickname' })
+  @IsString()
+  @IsNotEmpty()
+  nickname: string;
 
   @ApiProperty({ example: 'password' })
   @IsString()
@@ -19,10 +24,10 @@ export class AssistantSignUpDto {
   email: string;
 
   @ApiProperty({
-    enum: AssistantType,
-    example: AssistantType.LabAssistant,
+    enum: AssistantRole,
+    example: AssistantRole.LabAssistant,
   })
-  @IsEnum(AssistantType)
+  @IsEnum(AssistantRole)
   @IsNotEmpty()
-  type: AssistantType;
+  role: AssistantRole;
 }
