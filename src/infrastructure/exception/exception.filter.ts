@@ -1,4 +1,5 @@
 import { AlertService } from '@app/alert/alert.strategy.interface';
+import { Logger } from '@nestjs/common';
 import { ErrorCode, FilteredException } from '@infrastructure/types/type';
 import {
   ArgumentsHost,
@@ -11,13 +12,13 @@ import { Request } from 'express';
 
 @Catch()
 export class InternalExceptionFilter implements ExceptionFilter {
+  private logger = new Logger(InternalExceptionFilter.name);
   constructor(
     private readonly httpAdapterHost: HttpAdapterHost,
     private readonly alertService: AlertService,
   ) {}
 
   async catch(exception: any, host: ArgumentsHost) {
-    console.error(exception);
     const { httpAdapter } = this.httpAdapterHost;
 
     const ctx = host.switchToHttp();
@@ -57,6 +58,7 @@ export class InternalExceptionFilter implements ExceptionFilter {
     // Do not await this - Performance Issue
     this.alertService.sendError(resBody);
 
+    this.logger.error(exception);
     httpAdapter.reply(ctx.getResponse(), resBody, statusCode);
   }
 }
