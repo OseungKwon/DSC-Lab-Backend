@@ -1,16 +1,18 @@
+import { PrismaModule } from '@app/prisma/prisma.module';
 import { PrismaService } from '@app/prisma/prisma.service';
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
+import { configOptions } from 'src/module-config/config.config';
 import {
   Assistant1SignInDto,
   Assistant1SingUpDto,
+  TestAssistantSignUpDto,
   User1SignInDto,
 } from 'test/payload.test';
 import { AssistantAuthService } from './auth.service';
-import { PrismaModule } from '@app/prisma/prisma.module';
-import { ConfigModule } from '@nestjs/config';
-import { JwtModule } from '@nestjs/jwt';
-import { configOptions } from 'src/module-config/config.config';
+import { AssistantUniqueCredential } from './type';
 
 describe('AssistantService', () => {
   let service: AssistantAuthService;
@@ -65,6 +67,38 @@ describe('AssistantService', () => {
     it('should throw if user not found', async () => {
       try {
         await service.signin(User1SignInDto);
+      } catch (err) {
+        expect(err).toBeInstanceOf(BadRequestException);
+      }
+    });
+  });
+
+  describe('Check credential taken', () => {
+    it('should get false', async () => {
+      await prisma.assistant.create({
+        data: {
+          ...TestAssistantSignUpDto,
+        },
+      });
+      const result = await service.credential(
+        AssistantUniqueCredential.email,
+        TestAssistantSignUpDto.email,
+      );
+      expect(result.result).toBe(false);
+    });
+    it('should get true', async () => {
+      const result = await service.credential(
+        AssistantUniqueCredential.email,
+        'newemail@email.com',
+      );
+      expect(result.result).toBe(true);
+    });
+    it('should throw if invalid credential type', async () => {
+      try {
+        const result = await service.credential(
+          'something' as AssistantUniqueCredential,
+          'bad request',
+        );
       } catch (err) {
         expect(err).toBeInstanceOf(BadRequestException);
       }

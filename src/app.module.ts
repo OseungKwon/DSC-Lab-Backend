@@ -6,17 +6,16 @@ import { AppController } from './app/app.controller';
 import { AppService } from './app/app.service';
 import { AuthenticationModule } from './app/authentication/authentication.module';
 import { AuthorizationModule } from './app/authorization/authorization.module';
-import { UlidModule } from './app/ulid/ulid.module';
 import { configOptions } from './module-config/config.config';
 import { LoggerModuleConfig } from './module-config/logger.config';
 import { PrismaModule } from './app/prisma/prisma.module';
 import { DevOnlyMiddleware } from '@app/middlewares';
+import { MembersModule } from '@app/members/members.module';
 
 @Module({
   imports: [
     LoggerModule.forRoot(LoggerModuleConfig),
     ConfigModule.forRoot(configOptions),
-    UlidModule,
     AlertModule.forRootAsync({
       imports: [ConfigModule],
       type: 'mail',
@@ -36,6 +35,7 @@ import { DevOnlyMiddleware } from '@app/middlewares';
     AuthorizationModule,
     AlertModule,
     PrismaModule,
+    MembersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -13,7 +13,8 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { expireDate, hashCount } from '../common';
 import * as bcrypt from 'bcryptjs';
-import { User } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
+import { UserUniqueCredential } from './type';
 
 @Injectable()
 export class MemberService implements MemberAuthInterface {
@@ -28,6 +29,9 @@ export class MemberService implements MemberAuthInterface {
       where: {
         OR: [
           {
+            nickname: dto.nickname,
+          },
+          {
             email: dto.email,
           },
           {
@@ -39,7 +43,7 @@ export class MemberService implements MemberAuthInterface {
 
     /** email or groupdId duplicated */
     if (findAvailable.length) {
-      throw new BadRequestException('Duplicated value found');
+      throw new BadRequestException('Credential Taken');
     }
     /** Hash password */
     dto.password = await bcrypt.hash(dto.password, hashCount);
@@ -76,6 +80,36 @@ export class MemberService implements MemberAuthInterface {
     }
 
     return this.getToken(findUser.id, findUser.email);
+  }
+
+  async credential(type: UserUniqueCredential, value: string) {
+    let findOption: Prisma.UserWhereUniqueInput;
+    switch (type) {
+      case 'email':
+        findOption = {
+          email: value,
+        };
+        break;
+      case 'groupId':
+        findOption = {
+          groupId: value,
+        };
+        break;
+      case 'nickname':
+        findOption = {
+          nickname: value,
+        };
+        break;
+      default:
+        throw new BadRequestException('Unknown credential type');
+    }
+    const user = await this.prisma.user.findUnique({
+      where: findOption,
+    });
+    /** If credential taken : false, If it's available: true */
+    return {
+      result: user ? false : true,
+    };
   }
 
   private async getToken(id: string, email: string): Promise<AuthResponse> {

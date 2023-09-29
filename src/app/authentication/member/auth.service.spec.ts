@@ -7,10 +7,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { configOptions } from 'src/module-config/config.config';
 import {
   Assistant1SignInDto,
+  TestUserSignUpDto,
   User1SignInDto,
   User1SignUpDto,
 } from 'test/payload.test';
 import { MemberService } from './auth.service';
+import { UserUniqueCredential } from './type';
 
 describe('MemberService', () => {
   let service: MemberService;
@@ -65,6 +67,38 @@ describe('MemberService', () => {
     it('should throw error if user not found', async () => {
       try {
         await service.singin(Assistant1SignInDto);
+      } catch (err) {
+        expect(err).toBeInstanceOf(BadRequestException);
+      }
+    });
+  });
+
+  describe('Check credential taken', () => {
+    it('should get false', async () => {
+      await prisma.user.create({
+        data: {
+          ...TestUserSignUpDto,
+        },
+      });
+      const result = await service.credential(
+        UserUniqueCredential.email,
+        TestUserSignUpDto.email,
+      );
+      expect(result.result).toBe(false);
+    });
+    it('should get true', async () => {
+      const result = await service.credential(
+        UserUniqueCredential.email,
+        'new@naver.com',
+      );
+      expect(result.result).toBe(true);
+    });
+    it('should throw if invalid credential type', async () => {
+      try {
+        const result = await service.credential(
+          'something' as UserUniqueCredential,
+          'bad request',
+        );
       } catch (err) {
         expect(err).toBeInstanceOf(BadRequestException);
       }

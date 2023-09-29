@@ -7,13 +7,14 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { Assistant } from '@prisma/client';
+import { Assistant, Prisma } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 import { expireDate, hashCount } from '../common';
 import { AuthResponse } from '../member/response/auth.response';
 import { AssistantAuthInterface } from './auth.interface';
 import { AssistantSignInDto } from './dto/sign-in.dto';
 import { AssistantSignUpDto } from './dto/sign-up.dto';
+import { AssistantUniqueCredential } from './type';
 
 @Injectable()
 export class AssistantAuthService implements AssistantAuthInterface {
@@ -72,6 +73,26 @@ export class AssistantAuthService implements AssistantAuthInterface {
       throw new UnauthorizedException('Password unmatched');
     }
     return this.getToken(findAssistant.id, findAssistant.email);
+  }
+
+  async credential(type: AssistantUniqueCredential, value: string) {
+    let findOption: Prisma.AssistantWhereUniqueInput;
+    switch (type) {
+      case 'email':
+        findOption = {
+          email: value,
+        };
+        break;
+      default:
+        throw new BadRequestException('Unknown credential type');
+    }
+    const user = await this.prisma.assistant.findUnique({
+      where: findOption,
+    });
+
+    return {
+      result: user ? false : true,
+    };
   }
 
   private async getToken(id: string, email: string): Promise<AuthResponse> {

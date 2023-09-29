@@ -17,8 +17,6 @@ model Assistant{
 
   name        String
 
-  nickname    String @unique()
-
   password    String
 
   email       String @unique()

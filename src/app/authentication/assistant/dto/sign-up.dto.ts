@@ -8,11 +8,6 @@ export class AssistantSignUpDto {
   @IsNotEmpty()
   name: string;
 
-  @ApiProperty({ example: 'nickname' })
-  @IsString()
-  @IsNotEmpty()
-  nickname: string;
-
   @ApiProperty({ example: 'password' })
   @IsString()
   @IsNotEmpty()

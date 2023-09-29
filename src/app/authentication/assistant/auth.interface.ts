@@ -5,4 +5,5 @@ import { AssistantSignInDto } from './dto/sign-in.dto';
 export interface AssistantAuthInterface {
   signup(dto: AssistantSignUpDto): CommonReturnType;
   signin(dto: AssistantSignInDto): CommonReturnType;
+  credential(type: string, value: string): CommonReturnType;
 }

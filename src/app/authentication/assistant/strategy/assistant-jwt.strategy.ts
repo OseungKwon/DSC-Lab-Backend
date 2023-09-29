@@ -1,5 +1,5 @@
 // Standard Packages
-import { ForbiddenException } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 
@@ -10,11 +10,12 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PrismaService } from '@app/prisma/prisma.service';
 import { JwtPayload } from '@infrastructure/types/type';
 
+@Injectable()
 export class AssistantJwtStrategy extends PassportStrategy(
   Strategy,
   'assist-jwt',
 ) {
-  constructor(config: ConfigService, private prisma: PrismaService) {
+  constructor(private config: ConfigService, private prisma: PrismaService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
