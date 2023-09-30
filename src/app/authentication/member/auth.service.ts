@@ -72,6 +72,7 @@ export class MemberService implements MemberAuthInterface {
     } catch (err) {
       throw new BadRequestException('Member not found');
     }
+
     /** validate password */
     const validatePassword = await bcrypt.compare(password, findUser.password);
 

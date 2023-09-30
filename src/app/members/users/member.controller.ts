@@ -1,8 +1,10 @@
-import { Controller, Get, Patch } from '@nestjs/common';
+import { Body, Controller, Get, Patch } from '@nestjs/common';
 import { UserMemberInterface } from './member.interface';
 import { UserMemberDocs } from './member.docs';
 import { GetUser } from '@app/authorization/decorator/get-user.decorator';
 import { UserMemberService } from './member.service';
+import { EditProfileDto } from '@app/members/users/dto/edit-profile.dto';
+import { User } from '@prisma/client';
 
 @Controller()
 @UserMemberDocs.Controller
@@ -17,7 +19,7 @@ export class UserMemberController implements UserMemberInterface {
 
   @Patch()
   @UserMemberDocs.editProfile
-  editProfile(@GetUser('id') uid: string) {
-    throw new Error('Method not implemented.');
+  editProfile(@GetUser() uid: User, @Body() dto: EditProfileDto) {
+    return this.memberService.editProfile(uid, dto);
   }
 }
