@@ -35,8 +35,6 @@ export class AssistantJwtStrategy extends PassportStrategy(
       throw new ForbiddenException('Invalid authentication');
     }
 
-    // delet assistant password
-    delete assistant.password;
     return assistant;
   }
 }

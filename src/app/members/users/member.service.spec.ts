@@ -2,7 +2,7 @@ import { UserMemberService } from '@app/members/users/member.service';
 import { PrismaService } from '@app/prisma/prisma.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaModule } from '@app/prisma/prisma.module';
-import { generateRandomMemberSignUpDto } from '../../../../test/payload.test';
+import { generateRandomMember } from '../../../../test/payload.test';
 import { User } from '@prisma/client';
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 
@@ -10,11 +10,9 @@ describe('UserMemberService', () => {
   let service: UserMemberService;
   let prisma: PrismaService;
 
-  const [user1Signup, user1Signin, user1Edit] =
-    generateRandomMemberSignUpDto(true);
+  const [user1Signup, user1Signin, user1Edit] = generateRandomMember(true);
   let user1: User;
-  const [user2Signup, user2Signin, user2Edit] =
-    generateRandomMemberSignUpDto(true);
+  const [user2Signup, user2Signin, user2Edit] = generateRandomMember(true);
   let user2: User;
 
   beforeAll(async () => {

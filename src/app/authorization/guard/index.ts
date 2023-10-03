@@ -1,2 +1,2 @@
-export * from './assistant.guard';
-export * from './user.guard';
+export * from './assistant-role.guard';
+export * from './user-role.guard';

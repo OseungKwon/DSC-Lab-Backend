@@ -7,7 +7,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { configOptions } from 'src/module-config/config.config';
 import {
   Assistant1SignInDto,
-  generateRandomMemberSignUpDto,
+  generateRandomMember,
   TestUserSignUpDto,
 } from 'test/payload.test';
 import { MemberService } from './auth.service';
@@ -18,8 +18,7 @@ describe('MemberService', () => {
   let service: MemberService;
   let prisma: PrismaService;
 
-  const [user1Signup, user1Signin, user1Edit] =
-    generateRandomMemberSignUpDto(false);
+  const [user1Signup, user1Signin, user1Edit] = generateRandomMember(false);
   let user1: User;
 
   beforeAll(async () => {

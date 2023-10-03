@@ -44,11 +44,11 @@ export class UserMemberService implements UserMemberInterface {
             ? {
                 name: dto.name,
                 nickname: dto.nickname,
+                password: await bcrypt.hash(dto.changedPassword, hashCount),
               }
             : {
                 name: dto.name,
                 nickname: dto.nickname,
-                password: await bcrypt.hash(dto.changedPassword, hashCount),
               },
         }),
       ]);

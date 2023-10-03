@@ -10,13 +10,22 @@ import {
   Assistant1SingUpDto,
   TestAssistantSignUpDto,
   User1SignInDto,
+  generateRandomAssistant,
 } from 'test/payload.test';
 import { AssistantAuthService } from './auth.service';
 import { AssistantUniqueCredential } from './type';
+import { Assistant } from '@prisma/client';
 
 describe('AssistantService', () => {
   let service: AssistantAuthService;
   let prisma: PrismaService;
+
+  const [assistant1Signup, assistant1Signin, assistant1Edit] =
+    generateRandomAssistant(false);
+  let assistant1: Assistant;
+
+  const [assistant2Signup, assistant2Signin, assistant2Edit] =
+    generateRandomAssistant(false);
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -34,14 +43,14 @@ describe('AssistantService', () => {
 
   describe('Assistant SingUp', () => {
     it('should sign up', async () => {
-      const result = await service.signup(Assistant1SingUpDto);
+      const result = await service.signup(assistant1Signup);
       expect(result.accessToken).not.toBeUndefined();
       expect(result.refreshToken).not.toBeUndefined();
     });
 
     it('should throw error if duplicated value found', async () => {
       try {
-        await service.signup(Assistant1SingUpDto);
+        await service.signup(assistant1Signup);
       } catch (err) {
         expect(err).toBeInstanceOf(BadRequestException);
       }
@@ -50,14 +59,14 @@ describe('AssistantService', () => {
 
   describe('Assistant SignIn', () => {
     it('should signin', async () => {
-      const result = await service.signin(Assistant1SignInDto);
+      const result = await service.signin(assistant1Signin);
       expect(result.accessToken).not.toBeUndefined();
       expect(result.refreshToken).not.toBeUndefined();
     });
     it('should throw if wrong password', async () => {
       try {
         await service.signin({
-          email: Assistant1SignInDto.email,
+          email: assistant1Signin.email,
           password: 'wrong-password',
         });
       } catch (err) {
@@ -77,12 +86,12 @@ describe('AssistantService', () => {
     it('should get false', async () => {
       await prisma.assistant.create({
         data: {
-          ...TestAssistantSignUpDto,
+          ...assistant2Signup,
         },
       });
       const result = await service.credential(
         AssistantUniqueCredential.email,
-        TestAssistantSignUpDto.email,
+        assistant2Signup.email,
       );
       expect(result.result).toBe(false);
     });
@@ -95,7 +104,7 @@ describe('AssistantService', () => {
     });
     it('should throw if invalid credential type', async () => {
       try {
-        const result = await service.credential(
+        await service.credential(
           'something' as AssistantUniqueCredential,
           'bad request',
         );

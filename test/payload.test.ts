@@ -5,12 +5,13 @@ import { AssistantSignUpDto } from '@app/authentication/assistant/dto/sign-up.dt
 import { MemberSignInDto } from '@app/authentication/member/dto/sign-in.dto';
 import { MemberSignUpDto } from '@app/authentication/member/dto/sign-up.dto';
 import { EditProfileDto } from '@app/members/users/dto/edit-profile.dto';
-import { UserRole } from '@prisma/client';
+import { AssistantRole, UserRole } from '@prisma/client';
 import { faker } from '@faker-js/faker';
 import * as bcrypt from 'bcryptjs';
+import { EditAssistantDto } from '@app/members/assistant/dto/edit-assistant.dto';
 
 /**If user want to hash password in test data -> set hash to true*/
-export const generateRandomMemberSignUpDto = (
+export const generateRandomMember = (
   hash: boolean,
 ): [MemberSignUpDto, MemberSignInDto, EditProfileDto] => {
   const signup: MemberSignUpDto = {
@@ -35,6 +36,30 @@ export const generateRandomMemberSignUpDto = (
     signup.password = bcrypt.hashSync(signup.password);
   }
 
+  return [signup, signin, edit];
+};
+
+export const generateRandomAssistant = (
+  hash: boolean,
+): [AssistantSignUpDto, AssistantSignInDto, EditAssistantDto] => {
+  const signup: AssistantSignUpDto = {
+    name: faker.string.alpha(5),
+    password: faker.string.alpha(10),
+    email: faker.internet.exampleEmail(),
+    role: faker.helpers.enumValue(AssistantRole),
+  };
+  const signin: AssistantSignInDto = {
+    email: signup.email,
+    password: signup.password,
+  };
+  const edit: EditAssistantDto = {
+    name: signup.name,
+    password: signup.password,
+    changedPassword: 'password',
+  };
+  if (hash) {
+    signup.password = bcrypt.hashSync(signup.password);
+  }
   return [signup, signin, edit];
 };
 

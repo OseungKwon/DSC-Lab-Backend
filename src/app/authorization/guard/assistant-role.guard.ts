@@ -4,37 +4,39 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { AvailableUser } from '../decorator';
-import { EnumToArray } from '@infrastructure/util';
-import { User, UserRole } from '@prisma/client';
+import { AvailableAssistant } from '../decorator';
 import { Request } from 'express';
+import { Assistant, AssistantRole } from '@prisma/client';
+import { EnumToArray } from '@infrastructure/util/enumToArray';
 
-export class UserGuard implements CanActivate {
+export class AssistantRoleGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
-    // Get available user role
+    // Get available assistants role
     const availableRoles = this.reflector.get(
-      AvailableUser,
+      AvailableAssistant,
       context.getHandler(),
     );
 
-    /** If 'all', return all of the array of user role */
+    /** If 'all', return all of the array of assistant role */
     const roles =
       availableRoles === 'all'
-        ? EnumToArray<UserRole>(UserRole)
+        ? EnumToArray<AssistantRole>(AssistantRole)
         : availableRoles;
 
     const request = context.switchToHttp().getRequest<Request>();
-    const user: User = request?.user as User;
+
+    // Get user from request
+    const user: Assistant = request?.user as Assistant;
 
     // If user not found or user has no role
-    if (!user || !user.role) {
+    if (!user || !user?.role) {
       throw new ForbiddenException('Forbidden Request');
     }
-    //User exist and also has role fields
+    // User exist and also has role field
     else {
-      // If user's role included in available role
+      // If user's role inclueded in available role
       if (!roles.includes(user.role)) {
         throw new ForbiddenException('Forbidden Request');
       }

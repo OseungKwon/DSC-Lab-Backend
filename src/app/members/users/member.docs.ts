@@ -5,11 +5,7 @@ import { UserJwtStrategy } from '@app/authentication/member/strategy/user-jwt.st
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 export const UserMemberDocs: SwaggerObject<UserMemberInterface> = {
-  Controller: applyDecorators(
-    UseGuards(UserJwtStrategy),
-    ApiTags('Member - User'),
-    ApiBearerAuth(),
-  ),
+  Controller: applyDecorators(ApiTags('Member - User'), ApiBearerAuth()),
   getProfile: applyDecorators(
     ApiOperation({ description: '사용자의 프로필을 조회합니다.' }),
   ),

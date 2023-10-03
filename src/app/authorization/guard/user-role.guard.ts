@@ -4,39 +4,41 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { AvailableAssistant } from '../decorator';
+import { AvailableUser } from '../decorator';
+import { EnumToArray } from '@infrastructure/util';
+import { Status, User, UserRole } from '@prisma/client';
 import { Request } from 'express';
-import { Assistant, AssistantRole } from '@prisma/client';
-import { EnumToArray } from '@infrastructure/util/enumToArray';
 
-export class AssistantGuard implements CanActivate {
+export class UserRoleGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
-    // Get available assistants role
+    // Get available user role
     const availableRoles = this.reflector.get(
-      AvailableAssistant,
+      AvailableUser,
       context.getHandler(),
     );
 
-    /** If 'all', return all of the array of assistant role */
+    /** If 'all', return all of the array of user role */
     const roles =
       availableRoles === 'all'
-        ? EnumToArray<AssistantRole>(AssistantRole)
+        ? EnumToArray<UserRole>(UserRole)
         : availableRoles;
 
     const request = context.switchToHttp().getRequest<Request>();
-
-    // Get user from request
-    const user: Assistant = request?.user as Assistant;
+    const user: User = request?.user as User;
 
     // If user not found or user has no role
-    if (!user || !user?.role) {
+    if (!user || !user.role) {
       throw new ForbiddenException('Forbidden Request');
     }
-    // User exist and also has role field
+    //User exist and also has role fields
     else {
-      // If user's role inclueded in available role
+      // If user not approved
+      if (user.status !== Status.Approved) {
+        throw new ForbiddenException('User not approved');
+      }
+      // If user's role included in available role
       if (!roles.includes(user.role)) {
         throw new ForbiddenException('Forbidden Request');
       }
