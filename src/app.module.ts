@@ -11,6 +11,8 @@ import { LoggerModuleConfig } from './module-config/logger.config';
 import { PrismaModule } from './app/prisma/prisma.module';
 import { DevOnlyMiddleware } from '@app/middlewares';
 import { MembersModule } from '@app/members/members.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TaskModule } from '@app/scheduler-task/task.module';
 
 @Module({
   imports: [
@@ -36,6 +38,8 @@ import { MembersModule } from '@app/members/members.module';
     AlertModule,
     PrismaModule,
     MembersModule,
+    TaskModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],
