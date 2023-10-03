@@ -39,6 +39,17 @@ export class AssistantMemberController implements AssistantMemberInterface {
     return this.memberService.editProfile(assistant, dto);
   }
 
+  @Get('/user/overview')
+  @UseGuards(AssistantRoleGuard)
+  @AvailableAssistant([
+    AssistantRole.LabAssistant,
+    AssistantRole.OfficeAssistant,
+  ])
+  @AssistantMemberDocs.getUserListOverview
+  getUserListOverview() {
+    return this.memberService.getUserListOverview();
+  }
+
   @Get('/user')
   @UseGuards(AssistantRoleGuard)
   @AvailableAssistant([

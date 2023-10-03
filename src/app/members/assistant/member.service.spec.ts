@@ -89,6 +89,13 @@ describe('AssistantMemberService', () => {
     });
   });
 
+  describe('Get List Overview (GET)', () => {
+    it('should get user list overview', async () => {
+      const result = await service.getUserListOverview();
+      expect(result).not.toBeUndefined();
+    });
+  });
+
   describe('Get User List (GET)', () => {
     it('should throw if user list is empty', async () => {
       try {

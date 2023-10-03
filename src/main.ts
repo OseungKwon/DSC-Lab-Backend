@@ -12,9 +12,9 @@ async function bootstrap() {
   const alertService = app.get<AlertService>(AlertService);
   // Nest Application config
   app.enableCors();
-  app.useGlobalFilters(
-    new InternalExceptionFilter(app.get(HttpAdapterHost), alertService),
-  );
+  // app.useGlobalFilters(
+  //   new InternalExceptionFilter(app.get(HttpAdapterHost), alertService),
+  // );
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

@@ -12,6 +12,7 @@ import * as bcrypt from 'bcryptjs';
 import { hashCount } from '@app/authentication/common';
 import { PaginationCounter } from '@infrastructure/util';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { GetUserOverviewResponse } from './response';
 
 @Injectable()
 export class AssistantMemberService implements AssistantMemberInterface {
@@ -51,6 +52,39 @@ export class AssistantMemberService implements AssistantMemberInterface {
     ]);
     delete updatedAssistant.password;
     return updatedAssistant;
+  }
+
+  async getUserListOverview() {
+    const result: GetUserOverviewResponse = {
+      total: 0,
+      pending: 0,
+      approved: 0,
+      reject: 0,
+    };
+
+    const aggregation = await this.prisma.user.groupBy({
+      by: ['status'],
+      _count: {
+        _all: true,
+      },
+    });
+
+    aggregation.forEach((aggregate) => {
+      const count = aggregate._count._all;
+      result.total += count;
+      switch (aggregate.status) {
+        case 'Approved':
+          result.approved += count;
+          break;
+        case 'Pending':
+          result.pending += count;
+          break;
+        case 'Reject':
+          result.reject += count;
+          break;
+      }
+    });
+    return result;
   }
 
   async getUserList(status: Status, page: number, size: number) {

@@ -2,6 +2,7 @@ import {
   CanActivate,
   ExecutionContext,
   ForbiddenException,
+  Injectable,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AvailableUser } from '../decorator';
@@ -9,6 +10,7 @@ import { EnumToArray } from '@infrastructure/util';
 import { Status, User, UserRole } from '@prisma/client';
 import { Request } from 'express';
 
+@Injectable()
 export class UserRoleGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
 
