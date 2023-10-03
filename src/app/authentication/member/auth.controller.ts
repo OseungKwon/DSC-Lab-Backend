@@ -1,9 +1,10 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { MemberAuthDocs } from './auth.docs';
 import { MemberAuthInterface } from './auth.interface';
 import { MemberService } from './auth.service';
 import { MemberSignUpDto } from './dto/sign-up.dto';
 import { MemberSignInDto } from './dto/sign-in.dto';
+import { UserUniqueCredential } from './type';
 
 @Controller()
 @MemberAuthDocs.Controller
@@ -20,5 +21,14 @@ export class MemberController implements MemberAuthInterface {
   @MemberAuthDocs.singin
   async singin(@Body() dto: MemberSignInDto) {
     return await this.service.singin(dto);
+  }
+
+  @Get('/credential')
+  @MemberAuthDocs.credential
+  async credential(
+    @Query('type') type: UserUniqueCredential,
+    @Query('value') value: string,
+  ) {
+    return await this.service.credential(type, value);
   }
 }

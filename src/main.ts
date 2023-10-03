@@ -12,15 +12,19 @@ async function bootstrap() {
   const alertService = app.get<AlertService>(AlertService);
   // Nest Application config
   app.enableCors();
-  app.useGlobalFilters(
-    new InternalExceptionFilter(app.get(HttpAdapterHost), alertService),
+  // app.useGlobalFilters(
+  //   new InternalExceptionFilter(app.get(HttpAdapterHost), alertService),
+  // );
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+    }),
   );
-  app.useGlobalPipes(new ValidationPipe());
   // Swagger document
   const { config, options } = SwaggerDefinition();
   const document = SwaggerModule.createDocument(app, config.build());
   SwaggerModule.setup('docs', app, document, options);
 
-  await app.listen(5500);
+  await app.listen(3000);
 }
 bootstrap();

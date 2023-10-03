@@ -4,7 +4,8 @@ export const SwaggerDefinition = () => {
   const config: DocumentBuilder = new DocumentBuilder()
     .setTitle('DSC Backoffice')
     .setDescription('Basckoffice API')
-    .setVersion('1.0');
+    .setVersion('1.0')
+    .addBearerAuth();
 
   const options: SwaggerCustomOptions = {
     explorer: true,

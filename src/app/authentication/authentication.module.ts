@@ -13,7 +13,7 @@ import { RouterModule } from '@nestjs/core';
     MemberModule,
     RouterModule.register([
       {
-        path: 'member',
+        path: 'user',
         children: [
           {
             path: 'auth',

@@ -4,6 +4,7 @@ import { AssistantSignInDto } from './dto/sign-in.dto';
 import { AssistantSignUpDto } from './dto/sign-up.dto';
 import { AssistantAuthService } from './auth.service';
 import { AsssistantAuthDocs } from './auth.docs';
+import { AssistantUniqueCredential } from './type';
 
 @Controller()
 @AsssistantAuthDocs.Controller
@@ -20,5 +21,11 @@ export class AssistantAuthController implements AssistantAuthInterface {
   @AsssistantAuthDocs.signin
   async signin(@Body() dto: AssistantSignInDto) {
     return await this.service.signin(dto);
+  }
+
+  @Get('/credential')
+  @AsssistantAuthDocs.credential
+  async credential(type: AssistantUniqueCredential, value: string) {
+    return await this.service.credential(type, value);
   }
 }
