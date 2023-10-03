@@ -13,6 +13,7 @@ import { DevOnlyMiddleware } from '@app/middlewares';
 import { MembersModule } from '@app/members/members.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TaskModule } from '@app/scheduler-task/task.module';
+import { MailModule } from '@app/mail/mail.module';
 
 @Module({
   imports: [
@@ -29,6 +30,16 @@ import { TaskModule } from '@app/scheduler-task/task.module';
             user: cfg.get<string>('MAIL_ID'),
             password: cfg.get<string>('MAIL_PASSWORD'),
           },
+        };
+      },
+      inject: [ConfigService],
+    }),
+    MailModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (cfg: ConfigService) => {
+        return {
+          gmailID: cfg.get<string>('MAIL_ID'),
+          gmailPW: cfg.get<string>('MAIL_PASSWORD'),
         };
       },
       inject: [ConfigService],
