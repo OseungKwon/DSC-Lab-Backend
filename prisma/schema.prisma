@@ -58,6 +58,8 @@ model User{
 
   enrolledIn   DateTime @default(now()) // Time user enrolled
 
+  loginAt      DateTime @default(now()) // User last login date
+
   createdAt    DateTime @default(now())
 
   updatedAt    DateTime @updatedAt

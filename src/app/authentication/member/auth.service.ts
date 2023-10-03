@@ -64,9 +64,13 @@ export class MemberService implements MemberAuthInterface {
     const { email, password } = dto;
     let findUser: User;
     try {
-      findUser = await this.prisma.user.findUniqueOrThrow({
+      /** Update user's login time and get user object. */
+      findUser = await this.prisma.user.update({
         where: {
           email,
+        },
+        data: {
+          loginAt: new Date(),
         },
       });
     } catch (err) {

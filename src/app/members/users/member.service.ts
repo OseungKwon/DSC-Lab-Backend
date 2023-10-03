@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { UserMemberInterface } from './member.interface';
@@ -10,6 +11,7 @@ import { User } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { hashCount } from '@app/authentication/common';
+import { WithdrawServiceDTO } from './dto/withdraw-service.dto';
 
 @Injectable()
 export class UserMemberService implements UserMemberInterface {
@@ -62,6 +64,26 @@ export class UserMemberService implements UserMemberInterface {
         }
         throw err;
       }
+    }
+  }
+
+  async serviceWithdraw(uid: User, dto: WithdrawServiceDTO) {
+    const passwordValidation = await bcrypt.compare(dto.password, uid.password);
+    if (!passwordValidation) {
+      throw new UnauthorizedException('Wrong password');
+    }
+    try {
+      const [deleteResult] = await this.prisma.$transaction([
+        this.prisma.user.delete({
+          where: {
+            id: uid.id,
+          },
+        }),
+      ]);
+      delete deleteResult.password;
+      return deleteResult;
+    } catch (err) {
+      throw new InternalServerErrorException('Fail withdraw');
     }
   }
 }

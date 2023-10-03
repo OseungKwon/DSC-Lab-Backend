@@ -21,6 +21,7 @@ export class GetUserResponse implements Omit<User, 'password'> {
     enum: $Enums.UserRole,
   })
   role: $Enums.UserRole;
+
   @ApiProperty({
     enum: $Enums.Status,
   })

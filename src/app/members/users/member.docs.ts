@@ -15,4 +15,9 @@ export const UserMemberDocs: SwaggerObject<UserMemberInterface> = {
         '사용자의 정보를 조회합니다. 수정하지 않는 필드는 기존 값을 보내주어야 합니다.',
     }),
   ),
+  serviceWithdraw: applyDecorators(
+    ApiOperation({
+      description: '사용자 회원 탈퇴입니다.',
+    }),
+  ),
 };
