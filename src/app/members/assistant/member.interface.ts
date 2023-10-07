@@ -6,7 +6,11 @@ import { CommonReturnType } from '@infrastructure/types/type';
 export interface AssistantMemberInterface {
   getProfile(aid: string): CommonReturnType;
 
-  editProfile(assistant: Assistant, dto: EditAssistantDto): CommonReturnType;
+  editProfile(
+    assistant: Assistant,
+    dto: EditAssistantDto,
+    file: Express.Multer.File,
+  ): CommonReturnType;
 
   getUserListOverview(): CommonReturnType;
 

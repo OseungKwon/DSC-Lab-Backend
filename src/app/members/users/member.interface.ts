@@ -6,7 +6,11 @@ import { WithdrawServiceDTO } from './dto/withdraw-service.dto';
 export interface UserMemberInterface {
   getProfile(uid: string): CommonReturnType;
 
-  editProfile(uid: User, dto: EditProfileDto): CommonReturnType;
+  editProfile(
+    uid: User,
+    dto: EditProfileDto,
+    file: Express.Multer.File,
+  ): CommonReturnType;
 
   serviceWithdraw(uid: User, dto: WithdrawServiceDTO): CommonReturnType;
 }

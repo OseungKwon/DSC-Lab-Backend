@@ -27,7 +27,12 @@ export class UserMemberService implements UserMemberInterface {
     delete result.password;
     return result;
   }
-  async editProfile(uid: User, dto: EditProfileDto) {
+
+  async editProfile(
+    uid: User,
+    dto: EditProfileDto,
+    file?: Express.Multer.File,
+  ) {
     // Check password
     const passwordValidation = await bcrypt.compare(dto.password, uid.password);
 

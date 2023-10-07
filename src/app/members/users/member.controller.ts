@@ -4,7 +4,9 @@ import {
   Delete,
   Get,
   Patch,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UserMemberInterface } from './member.interface';
 import { UserMemberDocs } from './member.docs';
@@ -14,6 +16,10 @@ import { EditProfileDto } from '@app/members/users/dto/edit-profile.dto';
 import { User } from '@prisma/client';
 import { UserJwtStrategy } from '@app/authentication/member/strategy/user-jwt.strategy';
 import { WithdrawServiceDTO } from './dto/withdraw-service.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { FileLimitFactory } from '@infrastructure/util/multer-option.factory';
+import { ProfileImageConfig } from '@infrastructure/util/file-limit.config';
+import { FileNameEncoderPipe } from '@infrastructure/util';
 
 @Controller()
 @UseGuards(UserJwtStrategy)
@@ -28,9 +34,16 @@ export class UserMemberController implements UserMemberInterface {
   }
 
   @Patch()
+  @UseInterceptors(
+    FileInterceptor('profile', FileLimitFactory(ProfileImageConfig)),
+  )
   @UserMemberDocs.editProfile
-  editProfile(@GetUser() uid: User, @Body() dto: EditProfileDto) {
-    return this.memberService.editProfile(uid, dto);
+  editProfile(
+    @GetUser() uid: User,
+    @Body() dto: EditProfileDto,
+    @UploadedFile(FileNameEncoderPipe) file: Express.Multer.File,
+  ) {
+    return this.memberService.editProfile(uid, dto, file);
   }
 
   @Delete()

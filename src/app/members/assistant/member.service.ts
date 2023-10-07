@@ -26,7 +26,11 @@ export class AssistantMemberService implements AssistantMemberInterface {
     delete result.password;
     return result;
   }
-  async editProfile(assistant: Assistant, dto: EditAssistantDto) {
+  async editProfile(
+    assistant: Assistant,
+    dto: EditAssistantDto,
+    file?: Express.Multer.File,
+  ) {
     const passwordValidation = await bcrypt.compare(
       dto.password,
       assistant.password,

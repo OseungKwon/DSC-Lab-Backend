@@ -13,6 +13,7 @@ import { DevOnlyMiddleware } from '@app/middlewares';
 import { MembersModule } from '@app/members/members.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TaskModule } from '@app/scheduler-task/task.module';
+import { AwsS3Module } from '@s3/aws-s3';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { TaskModule } from '@app/scheduler-task/task.module';
     PrismaModule,
     MembersModule,
     TaskModule,
+    AwsS3Module,
     ScheduleModule.forRoot(),
   ],
   controllers: [AppController],

@@ -4,6 +4,7 @@ import { applyDecorators } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
+  ApiConsumes,
   ApiOkResponse,
   ApiOperation,
   ApiQuery,
@@ -14,6 +15,7 @@ import { Status } from '@prisma/client';
 import { GetAssistantResponse } from './response/get-assistant.response';
 import { GetUserResponse } from './response/get-user.response';
 import { GetUserOverviewResponse } from './response';
+import { FileErrorDocs } from '@infrastructure/util/multer-option.factory';
 
 export const AssistantMemberDocs: SwaggerObject<AssistantMemberInterface> = {
   Controller: applyDecorators(ApiTags('User - Assistant'), ApiBearerAuth()),
@@ -23,8 +25,10 @@ export const AssistantMemberDocs: SwaggerObject<AssistantMemberInterface> = {
   ),
   editProfile: applyDecorators(
     ApiOperation({ summary: '프로필을 변경합니다.' }),
+    ApiConsumes('multipart/form-data'),
     ApiOkResponse({ type: GetAssistantResponse }),
     ApiUnauthorizedResponse({ description: '패스워드가 일치하지 않습니다.' }),
+    ...FileErrorDocs(),
   ),
   getUserListOverview: applyDecorators(
     ApiOperation({
