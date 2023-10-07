@@ -1,11 +1,21 @@
+import { MailService } from '@app/mail/mail.service';
 import { PrismaService } from '@app/prisma/prisma.service';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { DateTime } from 'luxon';
+import {
+  dormancyAccountDeleteAlertContentBuilder,
+  dormancyAlertContentBuilder,
+} from './mail';
 
 @Injectable()
 export class DormantAccountHandlerService {
-  constructor(private prisma: PrismaService) {}
+  private logger = new Logger(DormantAccountHandlerService.name);
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly mail: MailService,
+  ) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_2AM, {
     name: 'Dormant Account Handle Scheduler',
@@ -14,30 +24,54 @@ export class DormantAccountHandlerService {
   async dormantAccountHandler() {
     const now = DateTime.fromJSDate(new Date());
     const users = await this.prisma.user.findMany();
-    const deleteUserIdList = [];
+    const deleteUserList = [];
+
+    const subjectDormancyWarn = '미활동 계정 알림';
+    const subjectDormancyDelete = '미활동 계정 삭제 알림';
 
     try {
       users.forEach((user) => {
         const userLoginDate = DateTime.fromJSDate(user.loginAt);
-        const differMonth = now.diff(userLoginDate, 'months').toObject().months;
-        if (differMonth >= 12) {
-          deleteUserIdList.push(user.id);
+        const diff = now.diff(userLoginDate, ['months', 'days']).toObject();
+        const differMonth = diff.months;
+        const differDay = diff.days;
+
+        if (differMonth >= 12 && differDay == 0) {
+          /** Dormany Delete Alert */
+          this.mail.sendMail({
+            to: user.email,
+            subject: subjectDormancyDelete,
+            content: dormancyAccountDeleteAlertContentBuilder(user.name),
+          });
+          deleteUserList.push();
+        } else {
+          /** Dormancy Warning Alert */
+          if (differMonth === 10 && differDay === 0) {
+            this.mail.sendMail({
+              to: user.email,
+              subject: subjectDormancyWarn,
+              content: dormancyAlertContentBuilder(user.name),
+            });
+          }
         }
       });
       await this.prisma.$transaction([
         this.prisma.user.deleteMany({
           where: {
             id: {
-              in: deleteUserIdList,
+              in: deleteUserList,
             },
           },
         }),
       ]);
+      this.logger.log(
+        `Dormant Account Handler Triggered. Total ${deleteUserList.length} dormant accounts deleted.`,
+      );
     } catch (err) {
-      console.error(
+      this.logger.error(
         'Exception occured while scheduler. Please check scheduler logic',
       );
-      console.error((err as Error)?.message);
+      this.logger.error((err as Error)?.message);
     }
   }
 }
