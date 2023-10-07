@@ -10,19 +10,35 @@ import { PrismaService } from '@app/prisma/prisma.service';
 import { EditAssistantDto } from '@app/members/assistant/dto/edit-assistant.dto';
 import * as bcrypt from 'bcryptjs';
 import { hashCount } from '@app/authentication/common';
-import { PaginationCounter } from '@infrastructure/util';
+import {
+  PaginationCounter,
+  assistantProfileDirectory,
+  userProfileDirectory,
+} from '@infrastructure/util';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { GetUserOverviewResponse } from './response';
+import { GetAssistantResponse, GetUserOverviewResponse } from './response';
+import { AwsS3Service } from '@s3/aws-s3';
 
 @Injectable()
 export class AssistantMemberService implements AssistantMemberInterface {
-  constructor(private readonly prisma: PrismaService) {}
+  private profileURLProperty = 'profileURL';
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly s3: AwsS3Service,
+  ) {}
   async getProfile(aid: string) {
     const result = await this.prisma.assistant.findUnique({
       where: {
         id: aid,
       },
     });
+
+    /** Issue presigned URL */
+    result[this.profileURLProperty] = await this.s3.getSignedURL(
+      result.profileImageKey,
+      assistantProfileDirectory,
+    );
+    /** Delet user password hash */
     delete result.password;
     return result;
   }
@@ -31,14 +47,21 @@ export class AssistantMemberService implements AssistantMemberInterface {
     dto: EditAssistantDto,
     file?: Express.Multer.File,
   ) {
+    /** Password validation */
     const passwordValidation = await bcrypt.compare(
       dto.password,
       assistant.password,
     );
-
     if (!passwordValidation) {
       throw new UnauthorizedException('Wrong password');
     }
+
+    /** Upload file */
+    let userFileKey = assistant.profileImageKey;
+    if (file) {
+      userFileKey = await this.s3.uploadFile(file, assistantProfileDirectory);
+    }
+
     const [updatedAssistant] = await this.prisma.$transaction([
       this.prisma.assistant.update({
         where: {
@@ -48,12 +71,22 @@ export class AssistantMemberService implements AssistantMemberInterface {
           ? {
               name: dto.name,
               password: await bcrypt.hash(dto.changedPassword, hashCount),
+              profileImageKey: userFileKey,
             }
           : {
               name: dto.name,
+              profileImageKey: userFileKey,
             },
       }),
     ]);
+
+    /** Issue presigned URL */
+    updatedAssistant[this.profileURLProperty] = await this.s3.getSignedURL(
+      userFileKey,
+      assistantProfileDirectory,
+    );
+
+    /** Delete user password */
     delete updatedAssistant.password;
     return updatedAssistant;
   }
@@ -121,6 +154,14 @@ export class AssistantMemberService implements AssistantMemberInterface {
           id: uid,
         },
       });
+
+      /** Issue presigned URL */
+      user[this.profileURLProperty] = await this.s3.getSignedURL(
+        user.profileImageKey,
+        userProfileDirectory,
+      );
+
+      /** Delete user password hash */
       delete user.password;
       return user;
     } catch (err) {

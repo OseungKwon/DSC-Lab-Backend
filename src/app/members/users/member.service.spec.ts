@@ -5,6 +5,8 @@ import { PrismaModule } from '@app/prisma/prisma.module';
 import { generateRandomMember } from '../../../../test/payload.test';
 import { User } from '@prisma/client';
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
+import { AwsS3Module } from '@s3/aws-s3';
+import { ConfigModule } from '@nestjs/config';
 
 describe('UserMemberService', () => {
   let service: UserMemberService;
@@ -17,7 +19,7 @@ describe('UserMemberService', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [PrismaModule],
+      imports: [PrismaModule, AwsS3Module],
       providers: [UserMemberService],
     }).compile();
     service = module.get<UserMemberService>(UserMemberService);

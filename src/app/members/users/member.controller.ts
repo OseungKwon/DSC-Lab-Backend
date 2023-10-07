@@ -1,3 +1,9 @@
+import { MemberGuard } from '@app/authentication/member/guard/user-jwt.guard';
+import { GetUser } from '@app/authorization/decorator/get-user.decorator';
+import { EditProfileDto } from '@app/members/users/dto/edit-profile.dto';
+import { FileNameEncoderPipe } from '@infrastructure/util';
+import { ProfileImageConfig } from '@infrastructure/util/file-limit.config';
+import { FileLimitFactory } from '@infrastructure/util/multer-option.factory';
 import {
   Body,
   Controller,
@@ -8,21 +14,15 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { UserMemberInterface } from './member.interface';
-import { UserMemberDocs } from './member.docs';
-import { GetUser } from '@app/authorization/decorator/get-user.decorator';
-import { UserMemberService } from './member.service';
-import { EditProfileDto } from '@app/members/users/dto/edit-profile.dto';
-import { User } from '@prisma/client';
-import { UserJwtStrategy } from '@app/authentication/member/strategy/user-jwt.strategy';
-import { WithdrawServiceDTO } from './dto/withdraw-service.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { FileLimitFactory } from '@infrastructure/util/multer-option.factory';
-import { ProfileImageConfig } from '@infrastructure/util/file-limit.config';
-import { FileNameEncoderPipe } from '@infrastructure/util';
+import { User } from '@prisma/client';
+import { WithdrawServiceDTO } from './dto/withdraw-service.dto';
+import { UserMemberDocs } from './member.docs';
+import { UserMemberInterface } from './member.interface';
+import { UserMemberService } from './member.service';
 
 @Controller()
-@UseGuards(UserJwtStrategy)
+@UseGuards(MemberGuard)
 @UserMemberDocs.Controller
 export class UserMemberController implements UserMemberInterface {
   constructor(private readonly memberService: UserMemberService) {}

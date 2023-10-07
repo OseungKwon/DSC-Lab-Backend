@@ -9,6 +9,8 @@ import { Assistant } from '@prisma/client';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaModule } from '@app/prisma/prisma.module';
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
+import { AwsS3Module } from '@s3/aws-s3';
+import { ConfigModule } from '@nestjs/config';
 
 describe('AssistantMemberService', () => {
   let service: AssistantMemberService;
@@ -28,7 +30,7 @@ describe('AssistantMemberService', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [PrismaModule],
+      imports: [PrismaModule, ConfigModule.forRoot({}), AwsS3Module],
       providers: [AssistantMemberService],
     }).compile();
     service = module.get<AssistantMemberService>(AssistantMemberService);

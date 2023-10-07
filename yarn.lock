@@ -520,6 +520,20 @@
     "@smithy/util-middleware" "^2.0.3"
     tslib "^2.5.0"
 
+"@aws-sdk/s3-request-presigner@^3.427.0":
+  version "3.427.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/s3-request-presigner/-/s3-request-presigner-3.427.0.tgz#8f44fe30b5754fbb07cb4cb5795f7d7c383ae18e"
+  integrity sha512-BJuzCADG8XJoqEM9lTi402tFDF0URWnj2YGWdKSbW/ISsBt5qsp6SDcFFMr+vAR1jbSJK8zdx3Jhtxrp2xIoWg==
+  dependencies:
+    "@aws-sdk/signature-v4-multi-region" "3.425.0"
+    "@aws-sdk/types" "3.425.0"
+    "@aws-sdk/util-format-url" "3.425.0"
+    "@smithy/middleware-endpoint" "^2.0.10"
+    "@smithy/protocol-http" "^3.0.6"
+    "@smithy/smithy-client" "^2.1.9"
+    "@smithy/types" "^2.3.4"
+    tslib "^2.5.0"
+
 "@aws-sdk/signature-v4-multi-region@3.425.0":
   version "3.425.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/signature-v4-multi-region/-/signature-v4-multi-region-3.425.0.tgz#9521058eec054b835070e85a1fd10877de49b154"
@@ -594,6 +608,16 @@
   dependencies:
     "@aws-sdk/types" "3.425.0"
     "@smithy/node-config-provider" "^2.0.13"
+    tslib "^2.5.0"
+
+"@aws-sdk/util-format-url@3.425.0":
+  version "3.425.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/util-format-url/-/util-format-url-3.425.0.tgz#04070963c8ab28d6a837910c54f9d4647463f3e5"
+  integrity sha512-qkqua+CwQqv15OMQ5Bb5n182Jt26DSZH2zzj3T1helEeJQJeywAInUYaq+ncIZLx7qKlWMWR/7ICTTSQiredCQ==
+  dependencies:
+    "@aws-sdk/types" "3.425.0"
+    "@smithy/querystring-builder" "^2.0.10"
+    "@smithy/types" "^2.3.4"
     tslib "^2.5.0"
 
 "@aws-sdk/util-locate-window@^3.0.0":
@@ -1843,7 +1867,7 @@
     "@smithy/types" "^2.3.5"
     tslib "^2.5.0"
 
-"@smithy/querystring-builder@^2.0.11":
+"@smithy/querystring-builder@^2.0.10", "@smithy/querystring-builder@^2.0.11":
   version "2.0.11"
   resolved "https://registry.yarnpkg.com/@smithy/querystring-builder/-/querystring-builder-2.0.11.tgz#7a56bed12474ad46059116d87eb7b81cdba9d7f6"
   integrity sha512-b4kEbVMxpmfv2VWUITn2otckTi7GlMteZQxi+jlwedoATOGEyrCJPfRcYQJjbCi3fZ2QTfh3PcORvB27+j38Yg==
@@ -2330,10 +2354,10 @@
   dependencies:
     "@types/superagent" "*"
 
-"@types/uuid@^9.0.2":
-  version "9.0.2"
-  resolved "https://registry.npmjs.org/@types/uuid/-/uuid-9.0.2.tgz"
-  integrity sha512-kNnC1GFBLuhImSnV7w4njQkUiJi0ZXUycu1rUaouPqiKlXkh77JKgdRnTAp1x5eBwcIwbtI+3otwzuIDEuDoxQ==
+"@types/uuid@^9.0.5":
+  version "9.0.5"
+  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-9.0.5.tgz#25a71eb73eba95ac0e559ff3dd018fc08294acf6"
+  integrity sha512-xfHdwa1FMJ082prjSJpoEI57GZITiQz10r3vEJCHa2khEFQjKy91aWKz6+zybzssCvXUwE1LQWgWVwZ4nYUvHQ==
 
 "@types/validator@^13.7.10":
   version "13.11.1"
@@ -6343,12 +6367,12 @@ utils-merge@1.0.1, utils-merge@^1.0.1:
   resolved "https://registry.npmjs.org/utils-merge/-/utils-merge-1.0.1.tgz"
   integrity sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==
 
-uuid@9.0.0, uuid@^9.0.0:
+uuid@9.0.0:
   version "9.0.0"
   resolved "https://registry.npmjs.org/uuid/-/uuid-9.0.0.tgz"
   integrity sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==
 
-uuid@9.0.1:
+uuid@9.0.1, uuid@^9.0.1:
   version "9.0.1"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-9.0.1.tgz#e188d4c8853cc722220392c424cd637f32293f30"
   integrity sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==

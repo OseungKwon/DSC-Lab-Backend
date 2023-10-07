@@ -5,9 +5,7 @@ import { PrismaService } from './prisma/prisma.service';
 @Controller()
 @ApiTags('Development Utility')
 export class AppController {
-  constructor(private readonly prisma: PrismaService) {
-    console.log(process.env);
-  }
+  constructor(private readonly prisma: PrismaService) {}
 
   @Get('cleandb')
   @ApiOperation({
