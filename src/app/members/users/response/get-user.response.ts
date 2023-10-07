@@ -28,6 +28,9 @@ export class GetUserResponse implements Omit<User, 'password'> {
   status: $Enums.Status;
 
   @ApiProperty()
+  profileImageKey: string;
+
+  @ApiProperty()
   enrolledIn: Date;
 
   @ApiProperty()

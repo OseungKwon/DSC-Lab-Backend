@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
     "migrate": "prisma db push",
     "mode:dev": "cross-env MODE=dev nest start --watch",
@@ -19,12 +19,14 @@
     "test:unit": "jest --config ./test/jest.unit.json",
     "test:unit:watch": "jest --config ./test/jest.unit.json --watch",
     "test:unit:cov": "jest --config ./test/jest.unit.json --coverage",
-    "test:e2e": "cross-env MODE=test jest --config ./test/jest-e2e.json",
-    "dev": "cross-env MODE=dev nest start --watch",
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "dev": "dotenv -e .dev.env nest start --watch",
     "db:dev:up": "cd db-docker && docker-compose up -d",
     "db:dev:down": "cd db-docker && docker-compose down"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.427.0",
+    "@aws-sdk/s3-request-presigner": "^3.427.0",
     "@faker-js/faker": "^8.1.0",
     "@golevelup/nestjs-rabbitmq": "^4.0.0",
     "@hoplin/nestjs-logger": "^1.0.7",
@@ -58,7 +60,7 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "ulid": "^2.3.0",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
@@ -70,11 +72,12 @@
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.2",
     "@types/luxon": "^3.3.2",
+    "@types/multer": "^1.4.8",
     "@types/node": "^20.3.1",
     "@types/nodemailer": "^6.4.9",
     "@types/passport-jwt": "^3.0.9",
     "@types/supertest": "^2.0.12",
-    "@types/uuid": "^9.0.2",
+    "@types/uuid": "^9.0.5",
     "@typescript-eslint/eslint-plugin": "^5.59.11",
     "@typescript-eslint/parser": "^5.59.11",
     "cross-env": "^7.0.3",
@@ -97,7 +100,7 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
+    "rootDir": ".",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
@@ -105,14 +108,19 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
-    "coverageDirectory": "../coverage",
+    "coverageDirectory": "./coverage",
     "testEnvironment": "node",
     "moduleNameMapper": {
       "test/(.*)$": "<rootDir>/../test/$1",
       "src/(.*)$": "<rootDir>/$1",
       "^@app/(.*)$": "<rootDir>/app/$1",
       "^@infrastructure/(.*)$": "<rootDir>/infrastructure/$1",
-      "^@domain(.*)$/": "<rootDir>/domain/$1"
-    }
+      "^@domain(.*)$/": "<rootDir>/domain/$1",
+      "^@s3/aws-s3(|/.*)$": "<rootDir>/libs/aws-s3/src/$1"
+    },
+    "roots": [
+      "<rootDir>/src/",
+      "<rootDir>/libs/"
+    ]
   }
 }

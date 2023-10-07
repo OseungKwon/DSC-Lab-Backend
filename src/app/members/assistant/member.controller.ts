@@ -1,4 +1,15 @@
+import { AssistantGuard } from '@app/authentication/assistant/guard/assistant-jwt.guard';
+import { AvailableAssistant } from '@app/authorization/decorator';
+import { GetAssistant } from '@app/authorization/decorator/get-assistant.decorator';
+import { AssistantRoleGuard } from '@app/authorization/guard';
+import { ChangeUserStatusDto } from '@app/members/assistant/dto/change-user-status.dto';
+import { EditAssistantDto } from '@app/members/assistant/dto/edit-assistant.dto';
+import { AssistantMemberDocs } from '@app/members/assistant/member.docs';
 import { AssistantMemberInterface } from '@app/members/assistant/member.interface';
+import { AssistantMemberService } from '@app/members/assistant/member.service';
+import { FileNameEncoderPipe } from '@infrastructure/util';
+import { ProfileImageConfig } from '@infrastructure/util/file-limit.config';
+import { FileLimitFactory } from '@infrastructure/util/multer-option.factory';
 import {
   Body,
   Controller,
@@ -7,17 +18,12 @@ import {
   ParseIntPipe,
   Patch,
   Query,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { Assistant, AssistantRole, Status } from '@prisma/client';
-import { ChangeUserStatusDto } from '@app/members/assistant/dto/change-user-status.dto';
-import { AssistantMemberService } from '@app/members/assistant/member.service';
-import { EditAssistantDto } from '@app/members/assistant/dto/edit-assistant.dto';
-import { GetAssistant } from '@app/authorization/decorator/get-assistant.decorator';
-import { AssistantGuard } from '@app/authentication/assistant/guard/assistant-jwt.guard';
-import { AssistantRoleGuard } from '@app/authorization/guard';
-import { AvailableAssistant } from '@app/authorization/decorator';
-import { AssistantMemberDocs } from '@app/members/assistant/member.docs';
 
 @Controller()
 @UseGuards(AssistantGuard)
@@ -32,11 +38,15 @@ export class AssistantMemberController implements AssistantMemberInterface {
 
   @Patch()
   @AssistantMemberDocs.editProfile
+  @UseInterceptors(
+    FileInterceptor('profile', FileLimitFactory(ProfileImageConfig)),
+  )
   editProfile(
     @GetAssistant() assistant: Assistant,
     @Body() dto: EditAssistantDto,
+    @UploadedFile(FileNameEncoderPipe) file: Express.Multer.File,
   ) {
-    return this.memberService.editProfile(assistant, dto);
+    return this.memberService.editProfile(assistant, dto, file);
   }
 
   @Get('/user/overview')

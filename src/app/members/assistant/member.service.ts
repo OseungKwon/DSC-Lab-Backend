@@ -1,40 +1,71 @@
-import { AssistantMemberInterface } from '@app/members/assistant/member.interface';
+import { hashCount } from '@app/authentication/common';
 import { ChangeUserStatusDto } from '@app/members/assistant/dto/change-user-status.dto';
-import { Assistant, Status } from '@prisma/client';
+import { EditAssistantDto } from '@app/members/assistant/dto/edit-assistant.dto';
+import { AssistantMemberInterface } from '@app/members/assistant/member.interface';
+import { PrismaService } from '@app/prisma/prisma.service';
+import {
+  PaginationCounter,
+  assistantProfileDirectory,
+  userProfileDirectory,
+} from '@infrastructure/util';
 import {
   BadRequestException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { PrismaService } from '@app/prisma/prisma.service';
-import { EditAssistantDto } from '@app/members/assistant/dto/edit-assistant.dto';
-import * as bcrypt from 'bcryptjs';
-import { hashCount } from '@app/authentication/common';
-import { PaginationCounter } from '@infrastructure/util';
+import { Assistant, Status } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { AwsS3Service } from '@s3/aws-s3';
+import * as bcrypt from 'bcryptjs';
 import { GetUserOverviewResponse } from './response';
 
 @Injectable()
 export class AssistantMemberService implements AssistantMemberInterface {
-  constructor(private readonly prisma: PrismaService) {}
+  private profileURLProperty = 'profileURL';
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly s3: AwsS3Service,
+  ) {}
   async getProfile(aid: string) {
     const result = await this.prisma.assistant.findUnique({
       where: {
         id: aid,
       },
     });
+
+    /** Issue presigned URL */
+    result[this.profileURLProperty] = await this.s3.getSignedURL(
+      result.profileImageKey,
+      assistantProfileDirectory,
+    );
+
+    /** Delet user password hash */
     delete result.password;
     return result;
   }
-  async editProfile(assistant: Assistant, dto: EditAssistantDto) {
+  async editProfile(
+    assistant: Assistant,
+    dto: EditAssistantDto,
+    file?: Express.Multer.File,
+  ) {
+    /** Password validation */
     const passwordValidation = await bcrypt.compare(
       dto.password,
       assistant.password,
     );
-
     if (!passwordValidation) {
       throw new UnauthorizedException('Wrong password');
     }
+
+    /** Upload file */
+    let userFileKey = assistant.profileImageKey;
+    if (file) {
+      /** Remove previous profile image. Do not wait this task */
+      this.s3.removeObject(userFileKey, assistantProfileDirectory);
+      /** Upload new profile image */
+      userFileKey = await this.s3.uploadFile(file, assistantProfileDirectory);
+    }
+
     const [updatedAssistant] = await this.prisma.$transaction([
       this.prisma.assistant.update({
         where: {
@@ -44,12 +75,22 @@ export class AssistantMemberService implements AssistantMemberInterface {
           ? {
               name: dto.name,
               password: await bcrypt.hash(dto.changedPassword, hashCount),
+              profileImageKey: userFileKey,
             }
           : {
               name: dto.name,
+              profileImageKey: userFileKey,
             },
       }),
     ]);
+
+    /** Issue presigned URL */
+    updatedAssistant[this.profileURLProperty] = await this.s3.getSignedURL(
+      userFileKey,
+      assistantProfileDirectory,
+    );
+
+    /** Delete user password */
     delete updatedAssistant.password;
     return updatedAssistant;
   }
@@ -117,6 +158,14 @@ export class AssistantMemberService implements AssistantMemberInterface {
           id: uid,
         },
       });
+
+      /** Issue presigned URL */
+      user[this.profileURLProperty] = await this.s3.getSignedURL(
+        user.profileImageKey,
+        userProfileDirectory,
+      );
+
+      /** Delete user password hash */
       delete user.password;
       return user;
     } catch (err) {

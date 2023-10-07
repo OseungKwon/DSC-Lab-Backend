@@ -19,6 +19,12 @@ export class GetAssistantResponse implements Omit<Assistant, 'password'> {
   role: $Enums.AssistantRole;
 
   @ApiProperty()
+  profileImageKey: string;
+
+  @ApiProperty()
+  profileURL: string;
+
+  @ApiProperty()
   createdAt: Date;
 
   @ApiProperty()

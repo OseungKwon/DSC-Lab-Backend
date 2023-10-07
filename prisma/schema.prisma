@@ -13,19 +13,21 @@ datasource db {
 
 // For Assistant User
 model Assistant{
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
 
-  name        String
+  name            String
 
-  password    String
+  password        String
 
-  email       String @unique()
+  email           String @unique()
 
-  role        AssistantRole
+  profileImageKey String? @default("")
 
-  createdAt    DateTime @default(now())
+  role            AssistantRole
 
-  updatedAt    DateTime @updatedAt
+  createdAt       DateTime @default(now())
+
+  updatedAt       DateTime @updatedAt
 
 
   @@map("assistants")
@@ -40,29 +42,31 @@ enum AssistantRole {
 
 // For professor and normal user. Student
 model User{
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
   
-  name         String
+  name            String
 
-  nickname     String @unique()
+  nickname        String @unique()
 
-  password     String
+  password        String
 
-  email        String @unique() 
+  email           String @unique() 
+
+  profileImageKey String? @default("")
   
-  groupId      String @unique() // 학번
+  groupId         String @unique() // 학번
   
-  role         UserRole       // Role
+  role            UserRole       // Role
 
-  status       Status   @default(Pending) // 회원 승인 여부
+  status          Status   @default(Pending) // 회원 승인 여부
 
-  enrolledIn   DateTime @default(now()) // Time user enrolled
+  enrolledIn      DateTime @default(now()) // Time user enrolled
 
-  loginAt      DateTime @default(now()) // User last login date
+  loginAt         DateTime @default(now()) // User last login date
 
-  createdAt    DateTime @default(now())
+  createdAt       DateTime @default(now())
 
-  updatedAt    DateTime @updatedAt
+  updatedAt       DateTime @updatedAt
 
   @@map("members")
 }

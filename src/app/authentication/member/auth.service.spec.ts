@@ -13,6 +13,7 @@ import {
 import { MemberService } from './auth.service';
 import { UserUniqueCredential } from './type';
 import { User } from '@prisma/client';
+import { AwsS3Module } from '@s3/aws-s3';
 
 describe('MemberService', () => {
   let service: MemberService;

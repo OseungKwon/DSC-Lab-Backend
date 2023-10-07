@@ -13,7 +13,11 @@
     "src/(.*)$": "<rootDir>/$1",
     "^@app/(.*)$": "<rootDir>/app/$1",
     "^@infrastructure/(.*)$": "<rootDir>/infrastructure/$1",
-    "^@domain(.*)$/": "<rootDir>/domain/$1"
+    "^@domain(.*)$/": "<rootDir>/domain/$1",
+    "@aws/aws/(.*)": "<rootDir>/../libs/aws/src/$1",
+    "@aws/aws": "<rootDir>/../libs/aws/src",
+    "@s3/aws-s3/(.*)": "<rootDir>/../libs/aws-s3/src/$1",
+    "@s3/aws-s3": "<rootDir>/../libs/aws-s3/src"
   },
   "setupFiles": ["<rootDir>/../test/test-env.ts"]
 }
