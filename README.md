@@ -13,6 +13,12 @@
 - Database
   - MongoDB: MongoDB Atlas (Require replica set. Do not use AWS RDS)
   - ORM: Prisma ORM
+- System Metrics, APM Monitoring
+  - Grafana (Docker on-premise)
+  - Prometheus (Docker on-premise)
+  - InfluxDB (Docker on-premise)
+- Issue Tracking
+  - Sentry (It can be change to custom exception tracker)
 - AWS (Including future usage)
   - AWS EC2
   - AWS S3
