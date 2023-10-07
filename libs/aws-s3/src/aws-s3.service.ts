@@ -1,4 +1,5 @@
 import {
+  DeleteObjectCommand,
   GetObjectCommand,
   PutObjectCommand,
   S3Client,
@@ -42,6 +43,7 @@ export class AwsS3Service {
     this.s3Bucket = process.env.AWS_S3_BUCKET;
   }
 
+  /** Upload file */
   public async uploadFile(file: Express.Multer.File, directory: string) {
     /** Generate file salt */
     const fileSalt = v4();
@@ -60,6 +62,7 @@ export class AwsS3Service {
     return fileKey;
   }
 
+  /** Issue presigned URL */
   public async getSignedURL(
     fileKey: string,
     directory: string,
@@ -89,6 +92,29 @@ export class AwsS3Service {
     } catch (err) {
       /** Return null if S3 fail to issue presigned URL */
       return null;
+    }
+  }
+
+  /** Remove Object */
+  public async removeObject(
+    fileKey: string,
+    directory: string,
+  ): Promise<boolean> {
+    /** If key not handled, return */
+    if (!fileKey) {
+      return true;
+    }
+    const expectedLocation = this.directoryBuilder(fileKey, directory);
+    try {
+      const command = new DeleteObjectCommand({
+        Bucket: this.s3Bucket,
+        Key: expectedLocation,
+      });
+      await this.s3Client.send(command);
+      return true;
+    } catch (err) {
+      /** Fail to delet object */
+      return false;
     }
   }
 

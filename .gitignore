@@ -4,6 +4,7 @@
 
 # development env
 .dev.env
+.test.env
 
 # Logs
 logs

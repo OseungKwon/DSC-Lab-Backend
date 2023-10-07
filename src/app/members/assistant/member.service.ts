@@ -1,23 +1,23 @@
-import { AssistantMemberInterface } from '@app/members/assistant/member.interface';
-import { ChangeUserStatusDto } from '@app/members/assistant/dto/change-user-status.dto';
-import { Assistant, Status } from '@prisma/client';
-import {
-  BadRequestException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { PrismaService } from '@app/prisma/prisma.service';
-import { EditAssistantDto } from '@app/members/assistant/dto/edit-assistant.dto';
-import * as bcrypt from 'bcryptjs';
 import { hashCount } from '@app/authentication/common';
+import { ChangeUserStatusDto } from '@app/members/assistant/dto/change-user-status.dto';
+import { EditAssistantDto } from '@app/members/assistant/dto/edit-assistant.dto';
+import { AssistantMemberInterface } from '@app/members/assistant/member.interface';
+import { PrismaService } from '@app/prisma/prisma.service';
 import {
   PaginationCounter,
   assistantProfileDirectory,
   userProfileDirectory,
 } from '@infrastructure/util';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { Assistant, Status } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { GetAssistantResponse, GetUserOverviewResponse } from './response';
 import { AwsS3Service } from '@s3/aws-s3';
+import * as bcrypt from 'bcryptjs';
+import { GetUserOverviewResponse } from './response';
 
 @Injectable()
 export class AssistantMemberService implements AssistantMemberInterface {
@@ -38,6 +38,7 @@ export class AssistantMemberService implements AssistantMemberInterface {
       result.profileImageKey,
       assistantProfileDirectory,
     );
+
     /** Delet user password hash */
     delete result.password;
     return result;
@@ -59,6 +60,9 @@ export class AssistantMemberService implements AssistantMemberInterface {
     /** Upload file */
     let userFileKey = assistant.profileImageKey;
     if (file) {
+      /** Remove previous profile image. Do not wait this task */
+      this.s3.removeObject(userFileKey, assistantProfileDirectory);
+      /** Upload new profile image */
       userFileKey = await this.s3.uploadFile(file, assistantProfileDirectory);
     }
 

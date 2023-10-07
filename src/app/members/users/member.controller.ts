@@ -39,15 +39,15 @@ export class UserMemberController implements UserMemberInterface {
   )
   @UserMemberDocs.editProfile
   editProfile(
-    @GetUser() uid: User,
+    @GetUser() user: User,
     @Body() dto: EditProfileDto,
     @UploadedFile(FileNameEncoderPipe) file: Express.Multer.File,
   ) {
-    return this.memberService.editProfile(uid, dto, file);
+    return this.memberService.editProfile(user, dto, file);
   }
 
   @Delete()
-  serviceWithdraw(@GetUser() uid: User, @Body() dto: WithdrawServiceDTO) {
-    return this.memberService.serviceWithdraw(uid, dto);
+  serviceWithdraw(@GetUser() user: User, @Body() dto: WithdrawServiceDTO) {
+    return this.memberService.serviceWithdraw(user, dto);
   }
 }
