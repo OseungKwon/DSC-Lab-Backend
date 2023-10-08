@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, Query } from '@nestjs/common';
 import { MemberAuthDocs } from './auth.docs';
 import { MemberAuthInterface } from './auth.interface';
 import { MemberService } from './auth.service';
@@ -17,7 +17,8 @@ export class MemberController implements MemberAuthInterface {
     return await this.service.signup(dto);
   }
 
-  @Post('/singin')
+  @Post('/signin')
+  @HttpCode(200)
   @MemberAuthDocs.singin
   async singin(@Body() dto: MemberSignInDto) {
     return await this.service.singin(dto);

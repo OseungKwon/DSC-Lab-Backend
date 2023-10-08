@@ -78,7 +78,7 @@ export class AssistantAuthService implements AssistantAuthInterface {
   async credential(type: AssistantUniqueCredential, value: string) {
     let findOption: Prisma.AssistantWhereUniqueInput;
     switch (type) {
-      case 'email':
+      case AssistantUniqueCredential.email:
         findOption = {
           email: value,
         };
