@@ -18,7 +18,7 @@ import {
  * Test user, assistant Auth API
  */
 
-export default describe('AuthController', () => {
+export default describe('Auth API', () => {
   let app: INestApplication;
   let prisma: PrismaService;
 
@@ -49,6 +49,8 @@ export default describe('AuthController', () => {
   });
 
   afterAll(async () => {
+    /** Delete all of test datas */
+    await prisma.deleteAll();
     /** Close Nest.js App */
     await app.close();
   });
