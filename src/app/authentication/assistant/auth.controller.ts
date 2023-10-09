@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, Query } from '@nestjs/common';
 import { AssistantAuthInterface } from './auth.interface';
 import { AssistantSignInDto } from './dto/sign-in.dto';
 import { AssistantSignUpDto } from './dto/sign-up.dto';
@@ -18,6 +18,7 @@ export class AssistantAuthController implements AssistantAuthInterface {
   }
 
   @Post('/signin')
+  @HttpCode(200)
   @AsssistantAuthDocs.signin
   async signin(@Body() dto: AssistantSignInDto) {
     return await this.service.signin(dto);
@@ -25,7 +26,10 @@ export class AssistantAuthController implements AssistantAuthInterface {
 
   @Get('/credential')
   @AsssistantAuthDocs.credential
-  async credential(type: AssistantUniqueCredential, value: string) {
+  async credential(
+    @Query('type') type: AssistantUniqueCredential,
+    @Query('value') value: string,
+  ) {
     return await this.service.credential(type, value);
   }
 }

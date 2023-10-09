@@ -26,9 +26,6 @@ export class DormantAccountHandlerService {
     const users = await this.prisma.user.findMany();
     const deleteUserList = [];
 
-    const subjectDormancyWarn = '미활동 계정 알림';
-    const subjectDormancyDelete = '미활동 계정 삭제 알림';
-
     try {
       users.forEach((user) => {
         const userLoginDate = DateTime.fromJSDate(user.loginAt);
@@ -40,7 +37,7 @@ export class DormantAccountHandlerService {
           /** Dormany Delete Alert */
           this.mail.sendMail({
             to: user.email,
-            subject: subjectDormancyDelete,
+            subject: '미활동 계정 삭제 알림',
             content: dormancyAccountDeleteAlertContentBuilder(user.name),
           });
           deleteUserList.push();
@@ -49,7 +46,7 @@ export class DormantAccountHandlerService {
           if (differMonth === 10 && differDay === 0) {
             this.mail.sendMail({
               to: user.email,
-              subject: subjectDormancyWarn,
+              subject: '미활동 계정 알림',
               content: dormancyAlertContentBuilder(user.name),
             });
           }

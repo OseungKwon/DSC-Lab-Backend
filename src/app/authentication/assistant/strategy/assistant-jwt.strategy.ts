@@ -30,7 +30,6 @@ export class AssistantJwtStrategy extends PassportStrategy(
         id,
       },
     });
-
     if (!assistant) {
       throw new ForbiddenException('Invalid authentication');
     }

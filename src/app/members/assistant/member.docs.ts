@@ -18,7 +18,7 @@ import { GetUserOverviewResponse } from './response';
 import { FileErrorDocs } from '@infrastructure/util/multer-option.factory';
 
 export const AssistantMemberDocs: SwaggerObject<AssistantMemberInterface> = {
-  Controller: applyDecorators(ApiTags('User - Assistant'), ApiBearerAuth()),
+  Controller: applyDecorators(ApiTags('Member - Assistant'), ApiBearerAuth()),
   getProfile: applyDecorators(
     ApiOperation({ summary: '프로필을 조회합니다.' }),
     ApiOkResponse({ type: GetAssistantResponse }),

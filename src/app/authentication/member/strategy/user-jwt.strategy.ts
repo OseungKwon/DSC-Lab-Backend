@@ -22,8 +22,15 @@ export class UserJwtStrategy extends PassportStrategy(Strategy, 'user-jwt') {
         id,
       },
     });
+
+    /** If user not found */
     if (!user) {
       throw new ForbiddenException('Invalid authentication');
+    }
+
+    /** If member is not approved state */
+    if (user.status !== 'Approved') {
+      throw new ForbiddenException('User is not approved state');
     }
     return user;
   }

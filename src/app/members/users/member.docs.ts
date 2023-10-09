@@ -12,7 +12,7 @@ import { UserMemberInterface } from './member.interface';
 import { GetUserResponse } from './response/get-user.response';
 
 export const UserMemberDocs: SwaggerObject<UserMemberInterface> = {
-  Controller: applyDecorators(ApiTags('User - Member'), ApiBearerAuth()),
+  Controller: applyDecorators(ApiTags('Member - User'), ApiBearerAuth()),
   getProfile: applyDecorators(
     ApiOperation({ description: '사용자의 프로필을 조회합니다.' }),
     ApiOkResponse({ type: GetUserResponse }),
