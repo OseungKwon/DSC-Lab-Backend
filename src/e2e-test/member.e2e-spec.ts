@@ -211,10 +211,6 @@ export default describe('Member API', () => {
         .expect(401);
     });
     it('should change credential without password change', async () => {
-      const editAssistant1 = {
-        name: assistant1Signup.name,
-        password: assistant1Signup.password,
-      };
       const result = await request(app.getHttpServer())
         .patch('/assistant/member')
         .set('Authorization', `Bearer ${assistant1Accesstoken}`)
@@ -224,17 +220,146 @@ export default describe('Member API', () => {
       expect(result.body.id).toBe(assistant1.id);
     });
 
-    it('check allowed extensions', async () => {
-      const allowedExtension = ['jpg', 'jpeg'];
-      for (const i of allowedExtension) {
-        const [buffer, name] = generateDummyFileBuffer(i);
-        await request(app.getHttpServer())
+    const allowedExtension = ['jpg', 'jpeg'];
+    for (const extension of allowedExtension) {
+      const [buffer, name] = generateDummyFileBuffer(extension);
+      it(`should allow extension: ${extension}`, () => {
+        return request(app.getHttpServer())
           .patch('/assistant/member')
           .set('Authorization', `Bearer ${assistant1Accesstoken}`)
           .attach('profile', buffer, { filename: name })
           .field('name', 'assistant-name')
           .field('password', assistant1Signup.password);
-      }
+      });
+    }
+  });
+
+  describe('/user/member (GET)', () => {
+    it('should throw if unauthorized', () => {
+      return request(app.getHttpServer()).get('/user/member').expect(401);
+    });
+
+    it('should throw if user yet approved', () => {
+      return request(app.getHttpServer())
+        .get('/user/member')
+        .set('Authorization', `Bearer ${user1Accesstoken}`)
+        .expect(403);
+    });
+  });
+
+  /** Change user1 status to approve */
+  describe('/assistant/member/user/:uid', () => {
+    it('should throw if assistant have no access to change user status', async () => {
+      return request(app.getHttpServer())
+        .patch(`/assistant/member/user/${user1.id}`)
+        .set('Authorization', `Bearer ${assistant1Accesstoken}`)
+        .send({
+          status: 'Approved',
+          reason: 'string',
+        })
+        .expect(403);
+    });
+
+    it('should change user status as approved', () => {
+      return request(app.getHttpServer())
+        .patch(`/assistant/member/user/${user1.id}`)
+        .set('Authorization', `Bearer ${assistant2Accesstoken}`)
+        .send({
+          status: 'Approved',
+          reason: 'string',
+        })
+        .expect(200);
+    });
+  });
+
+  describe('/user/member (GET)', () => {
+    it('should get user information', () => {
+      return request(app.getHttpServer())
+        .get('/user/member')
+        .set('Authorization', `Bearer ${user1Accesstoken}`)
+        .expect(200);
+    });
+  });
+
+  describe('/user/member (PATCH)', () => {
+    it('should throw if unauthroized', async () => {
+      return request(app.getHttpServer()).patch('/user/member').expect(401);
+    });
+    it('should throw if payload not given', () => {
+      return request(app.getHttpServer())
+        .patch('/user/member')
+        .set('Authorization', `Bearer ${user1Accesstoken}`)
+        .expect(400);
+    });
+    it('should throw if password unmatched', async () => {
+      const editUser1 = {
+        name: user1Signup.name,
+        nickname: user1Signup.nickname,
+        password: 'wrong password',
+      };
+      await request(app.getHttpServer())
+        .patch('/user/member')
+        .set('Authorization', `Bearer ${user1Accesstoken}`)
+        .send(editUser1)
+        .expect(401);
+    });
+    it('should change user information', async () => {
+      const editUser1 = {
+        name: user1Signup.name,
+        nickname: user1Signup.nickname,
+        password: user1Signup.password,
+      };
+      await request(app.getHttpServer())
+        .patch('/user/member')
+        .set('Authorization', `Bearer ${user1Accesstoken}`)
+        .send(editUser1)
+        .expect(200);
+    });
+
+    const allowedExtension = ['png', 'webp', 'svg'];
+    for (const extension of allowedExtension) {
+      const [buffer, name] = generateDummyFileBuffer(extension);
+      it(`should allow extension: ${extension}`, async () => {
+        const editUser1 = {
+          name: user1Signup.name,
+          nickname: user1Signup.nickname,
+          password: user1Signup.password,
+        };
+        await request(app.getHttpServer())
+          .patch('/user/member')
+          .set('Authorization', `Bearer ${user1Accesstoken}`)
+          .attach('profile', buffer, { filename: name })
+          .field('name', user1Signup.name)
+          .field('nickname', user1Signup.nickname)
+          .field('password', user1Signup.password)
+          .expect(200);
+      });
+    }
+  });
+
+  describe('/user/member (DELTE)', () => {
+    it('should throw if unauthorized', () => {
+      return request(app.getHttpServer()).delete('/user/member').expect(401);
+    });
+
+    it('should throw if password unmatched', () => {
+      return request(app.getHttpServer())
+        .delete('/user/member')
+        .set('Authorization', `Bearer ${user1Accesstoken}`)
+        .send({
+          password: 'wrong-password',
+        })
+        .expect(401);
+    });
+
+    it('should withdraw user', () => {
+      return request(app.getHttpServer())
+        .delete('/user/member')
+        .set('Authorization', `Bearer ${user1Accesstoken}`)
+        .send({
+          password: user1Signup.password,
+        })
+        .expect(200);
     });
   });
 });

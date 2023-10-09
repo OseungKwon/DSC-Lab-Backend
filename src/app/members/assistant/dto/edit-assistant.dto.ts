@@ -4,6 +4,7 @@ import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 export class EditAssistantDto {
   @ApiProperty({
     example: 'assistant-name',
+    description: '사용자가 변경하지 않으면, 기존 값을 대입',
   })
   @IsString()
   @IsNotEmpty()

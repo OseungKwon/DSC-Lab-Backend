@@ -36,10 +36,6 @@ export class UserRoleGuard implements CanActivate {
     }
     //User exist and also has role fields
     else {
-      // If user not approved
-      if (user.status !== Status.Approved) {
-        throw new ForbiddenException('User not approved');
-      }
       // If user's role included in available role
       if (!roles.includes(user.role)) {
         throw new ForbiddenException('Forbidden Request');

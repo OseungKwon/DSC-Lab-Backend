@@ -26,7 +26,7 @@
   - AWS SQS, SNS
   - AWS Elastic Cache
 
-## Rule
+## Rules
 
 ---
 
@@ -41,6 +41,20 @@
 4. Use git-flow while development
 
 5. Run E2E, Unit test before merge.
+
+## Run test code
+
+- E2E test
+
+```
+yarn test:e2e
+```
+
+- Unit test
+
+```
+yarn test:unit
+```
 
 ## Contribution
 
