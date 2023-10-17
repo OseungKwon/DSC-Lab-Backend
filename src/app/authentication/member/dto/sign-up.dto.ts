@@ -1,3 +1,4 @@
+import { IsHongikEmailDomain } from '@app/authentication/decorator';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserRole } from '@prisma/client';
 import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
@@ -18,8 +19,9 @@ export class MemberSignUpDto {
   @IsNotEmpty()
   password: string;
 
-  @ApiProperty({ example: 'member@gmail.com' })
+  @ApiProperty({ example: 'member@mail.hongik.ac.kr' })
   @IsEmail()
+  @IsHongikEmailDomain()
   @IsNotEmpty()
   email: string;
 

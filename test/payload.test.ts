@@ -18,7 +18,7 @@ export const generateRandomMember = (
     name: faker.string.alpha(5),
     nickname: faker.string.alpha(10),
     password: faker.string.alpha(10),
-    email: faker.internet.exampleEmail(),
+    email: `${faker.string.alpha(7)}@mail.hongik.ac.kr`,
     groupId: faker.string.alpha(10),
     role: faker.helpers.enumValue(UserRole),
   };
@@ -45,7 +45,7 @@ export const generateRandomAssistant = (
   const signup: AssistantSignUpDto = {
     name: faker.string.alpha(5),
     password: faker.string.alpha(10),
-    email: faker.internet.exampleEmail(),
+    email: `${faker.string.alpha(7)}@mail.hongik.ac.kr`,
     role: faker.helpers.enumValue(AssistantRole),
   };
   const signin: AssistantSignInDto = {
