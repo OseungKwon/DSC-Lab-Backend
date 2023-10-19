@@ -4,10 +4,9 @@ import {
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { v4 } from 'uuid';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { Injectable } from '@nestjs/common';
+import { v4 } from 'uuid';
 
 /**
  * All of the AWS SDK version is Version 3
@@ -57,6 +56,7 @@ export class AwsS3Service {
       Key: s3SavedIn,
       ContentType: file.mimetype,
       Body: file.buffer,
+      ACL: 'public-read',
     });
     await this.s3Client.send(command);
     return fileKey;
