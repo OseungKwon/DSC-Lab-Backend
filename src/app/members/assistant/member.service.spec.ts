@@ -117,7 +117,7 @@ describe('AssistantMemberService', () => {
   describe('Get User Info (GET)', () => {
     it('should throw if user not found', async () => {
       try {
-        await service.getUserInfo('id');
+        await service.getUserInfo(88978978);
       } catch (err) {
         expect(err).toBeInstanceOf(BadRequestException);
       }
@@ -132,7 +132,7 @@ describe('AssistantMemberService', () => {
   describe('Change user status (PATCH)', () => {
     it('should throw if user not found', async () => {
       try {
-        await service.changeUserStatus('id', {
+        await service.changeUserStatus(98789978, {
           status: 'Approved',
           reason: 'Reason',
         });

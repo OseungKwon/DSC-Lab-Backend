@@ -5,6 +5,15 @@ services:
     image: redis:7.2
     ports:
       - 6379:6379
+  db:
+    image: mysql
+    ports:
+      - '3306:3306'
+    restart: 'unless-stopped'
+    environment:
+      - MYSQL_ROOT_PASSWORD=hoplin1234!
+      - MYSQL_ROOT_HOST=%
+      - MYSQL_DATABASE=dsc-be
   slave-1:
     container_name: slave-a
     image: redis:7.2

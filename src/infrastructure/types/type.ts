@@ -4,7 +4,7 @@ import { applyDecorators } from '@nestjs/common';
 export type SwaggerTag = Record<string, string>;
 
 export type JwtPayload = {
-  id: string;
+  id: number;
   email: string;
 };
 

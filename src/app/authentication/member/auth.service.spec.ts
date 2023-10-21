@@ -4,16 +4,15 @@ import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
+import { User } from '@prisma/client';
 import { configOptions } from 'src/module-config/config.config';
 import {
   Assistant1SignInDto,
-  generateRandomMember,
   TestUserSignUpDto,
+  generateRandomMember,
 } from 'test/payload.test';
 import { MemberService } from './auth.service';
 import { UserUniqueCredential } from './type';
-import { User } from '@prisma/client';
-import { AwsS3Module } from '@s3/aws-s3';
 
 describe('MemberService', () => {
   let service: MemberService;

@@ -5,7 +5,7 @@ import { $Enums, Assistant } from '@prisma/client';
 
 export class GetAssistantResponse implements Omit<Assistant, 'password'> {
   @ApiProperty()
-  id: string;
+  id: number;
 
   @ApiProperty()
   name: string;
@@ -19,7 +19,7 @@ export class GetAssistantResponse implements Omit<Assistant, 'password'> {
   role: $Enums.AssistantRole;
 
   @ApiProperty()
-  profileImageKey: string;
+  profileKey: string;
 
   @ApiProperty()
   profileURL: string;

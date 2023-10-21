@@ -1,8 +1,4 @@
-import {
-  ValidationOptions,
-  registerDecorator,
-  ValidationArguments,
-} from 'class-validator';
+import { ValidationArguments, registerDecorator } from 'class-validator';
 
 /** Allowed Hongik Email Domain
  *

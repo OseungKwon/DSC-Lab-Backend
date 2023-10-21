@@ -24,18 +24,12 @@ export class UserMemberService implements UserMemberInterface {
     private readonly s3: AwsS3Service,
   ) {}
 
-  async getProfile(uid: string) {
+  async getProfile(uid: number) {
     const result = await this.prisma.user.findUnique({
       where: {
         id: uid,
       },
     });
-
-    /** Issue presigned URL */
-    result[this.profileURLProperty] = await this.s3.getSignedURL(
-      result.profileImageKey,
-      userProfileDirectory,
-    );
 
     // Delete user hash
     delete result.password;
@@ -58,12 +52,15 @@ export class UserMemberService implements UserMemberInterface {
     }
 
     /** Upload file */
-    let userFileKey = user.profileImageKey;
+    let profileURL = user.profileURL;
+    let imageKey = user.profileKey;
     if (file) {
-      /** Remove previous object. Do not wait this task */
-      this.s3.removeObject(userFileKey, userProfileDirectory);
+      /** Remove previous image file */
+      this.s3.removeObject(imageKey, userProfileDirectory);
+
       /** Upload new profile image */
-      userFileKey = await this.s3.uploadFile(file, userProfileDirectory);
+      imageKey = await this.s3.uploadFile(file, userProfileDirectory);
+      profileURL = this.s3.getStaticURL(imageKey, userProfileDirectory);
     }
 
     // Change credential
@@ -78,21 +75,16 @@ export class UserMemberService implements UserMemberInterface {
                 name: dto.name,
                 nickname: dto.nickname,
                 password: await bcrypt.hash(dto.changedPassword, hashCount),
-                profileImageKey: userFileKey,
+                profileURL,
               }
             : {
                 name: dto.name,
                 nickname: dto.nickname,
-                profileImageKey: userFileKey,
+                profileURL,
               },
         }),
       ]);
 
-      /** Issue presigned URL */
-      updatedResult[this.profileURLProperty] = await this.s3.getSignedURL(
-        updatedResult.profileImageKey,
-        userProfileDirectory,
-      );
       // Delete user hash
       delete updatedResult.password;
       return updatedResult;

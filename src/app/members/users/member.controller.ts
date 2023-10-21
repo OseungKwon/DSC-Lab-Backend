@@ -29,7 +29,7 @@ export class UserMemberController implements UserMemberInterface {
 
   @Get()
   @UserMemberDocs.getProfile
-  getProfile(@GetUser('id') uid: string) {
+  getProfile(@GetUser('id') uid: number) {
     return this.memberService.getProfile(uid);
   }
 

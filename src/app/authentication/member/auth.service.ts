@@ -1,19 +1,19 @@
+import { PrismaService } from '@app/prisma/prisma.service';
+import { JwtPayload } from '@infrastructure/types/type';
 import {
   BadRequestException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { MemberAuthInterface } from './auth.interface';
-import { PrismaService } from '@app/prisma/prisma.service';
-import { MemberSignUpDto } from './dto/sign-up.dto';
-import { MemberSignInDto } from './dto/sign-in.dto';
-import { AuthResponse } from './response/auth.response';
-import { JwtPayload } from '@infrastructure/types/type';
-import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { expireDate, hashCount } from '../common';
-import * as bcrypt from 'bcryptjs';
+import { JwtService } from '@nestjs/jwt';
 import { Prisma, User } from '@prisma/client';
+import * as bcrypt from 'bcryptjs';
+import { expireDate, hashCount } from '../common';
+import { MemberAuthInterface } from './auth.interface';
+import { MemberSignInDto } from './dto/sign-in.dto';
+import { MemberSignUpDto } from './dto/sign-up.dto';
+import { AuthResponse } from './response/auth.response';
 import { UserUniqueCredential } from './type';
 
 @Injectable()
@@ -117,7 +117,7 @@ export class MemberService implements MemberAuthInterface {
     };
   }
 
-  private async getToken(id: string, email: string): Promise<AuthResponse> {
+  private async getToken(id: number, email: string): Promise<AuthResponse> {
     const payload: JwtPayload = {
       id,
       email,

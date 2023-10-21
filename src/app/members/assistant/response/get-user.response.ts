@@ -3,7 +3,7 @@ import { $Enums, User } from '@prisma/client';
 
 export class GetUserResponse implements Omit<User, 'password'> {
   @ApiProperty()
-  id: string;
+  id: number;
 
   @ApiProperty()
   name: string;
@@ -27,7 +27,7 @@ export class GetUserResponse implements Omit<User, 'password'> {
   status: $Enums.Status;
 
   @ApiProperty()
-  profileImageKey: string;
+  profileKey: string;
 
   @ApiProperty()
   profileURL: string;
