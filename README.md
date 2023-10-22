@@ -1,6 +1,8 @@
 # 🖥️ Hongik University Department of Software and Communication Backoffice API
 
-홍익대학교 소프트웨어 융합학과 신규 사이트 및 백오피스 RESTful API
+홍익대학교 소프트웨어 융합학과 홈페이지 Backend
+
+Frontend Repository: https://github.com/Hongik-Univ-DSC-Re-New/DSC-Frontend
 
 ---
 
