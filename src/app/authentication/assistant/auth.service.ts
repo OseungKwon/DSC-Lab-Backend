@@ -95,7 +95,7 @@ export class AssistantAuthService implements AssistantAuthInterface {
     };
   }
 
-  private async getToken(id: string, email: string): Promise<AuthResponse> {
+  private async getToken(id: number, email: string): Promise<AuthResponse> {
     const payload: JwtPayload = {
       id,
       email,

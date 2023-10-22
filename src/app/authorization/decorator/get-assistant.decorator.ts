@@ -1,6 +1,5 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { Request } from 'express';
-import { Assistant } from '@prisma/client';
 
 export const GetAssistant = createParamDecorator(
   (key: string, ctx: ExecutionContext) => {

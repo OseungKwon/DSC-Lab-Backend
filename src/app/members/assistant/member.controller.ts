@@ -32,7 +32,7 @@ export class AssistantMemberController implements AssistantMemberInterface {
   constructor(private readonly memberService: AssistantMemberService) {}
   @Get()
   @AssistantMemberDocs.getProfile
-  getProfile(@GetAssistant('id') aid: string) {
+  getProfile(@GetAssistant('id') aid: number) {
     return this.memberService.getProfile(aid);
   }
 
@@ -82,7 +82,7 @@ export class AssistantMemberController implements AssistantMemberInterface {
     AssistantRole.OfficeAssistant,
   ])
   @AssistantMemberDocs.getUserInfo
-  getUserInfo(@Param('uid') uid: string) {
+  getUserInfo(@Param('uid', ParseIntPipe) uid: number) {
     return this.memberService.getUserInfo(uid);
   }
 
@@ -94,7 +94,7 @@ export class AssistantMemberController implements AssistantMemberInterface {
   ])
   @AssistantMemberDocs.changeUserStatus
   changeUserStatus(
-    @Param('uid') uid: string,
+    @Param('uid', ParseIntPipe) uid: number,
     @Body() dto: ChangeUserStatusDto,
   ) {
     return this.memberService.changeUserStatus(uid, dto);

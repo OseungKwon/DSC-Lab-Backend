@@ -11,7 +11,7 @@
 - TypeScript
 - Nest.js(v.10), Express.js
 - Database
-  - MongoDB: MongoDB Atlas (Require replica set. Do not use AWS RDS)
+  - MySQL: MySQL 8.1
   - ORM: Prisma ORM
 - System Metrics, APM Monitoring
   - Grafana (Docker on-premise)

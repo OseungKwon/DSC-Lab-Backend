@@ -4,17 +4,11 @@ import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
+import { Assistant } from '@prisma/client';
 import { configOptions } from 'src/module-config/config.config';
-import {
-  Assistant1SignInDto,
-  Assistant1SingUpDto,
-  TestAssistantSignUpDto,
-  User1SignInDto,
-  generateRandomAssistant,
-} from 'test/payload.test';
+import { User1SignInDto, generateRandomAssistant } from 'test/payload.test';
 import { AssistantAuthService } from './auth.service';
 import { AssistantUniqueCredential } from './type';
-import { Assistant } from '@prisma/client';
 
 describe('AssistantService', () => {
   let service: AssistantAuthService;

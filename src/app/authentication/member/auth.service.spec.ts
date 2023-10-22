@@ -4,16 +4,17 @@ import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
+import { User } from '@prisma/client';
 import { configOptions } from 'src/module-config/config.config';
 import {
   Assistant1SignInDto,
-  generateRandomMember,
   TestUserSignUpDto,
+  generateRandomMember,
 } from 'test/payload.test';
 import { MemberService } from './auth.service';
 import { UserUniqueCredential } from './type';
-import { User } from '@prisma/client';
-import { AwsS3Module } from '@s3/aws-s3';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { MailService } from '@app/mail/mail.service';
 
 describe('MemberService', () => {
   let service: MemberService;
@@ -29,7 +30,23 @@ describe('MemberService', () => {
         JwtModule.register({}),
         ConfigModule.forRoot(configOptions),
       ],
-      providers: [MemberService],
+      providers: [
+        MemberService,
+        {
+          provide: MailService,
+          useValue: {
+            sendMail: () => true,
+          },
+        },
+        {
+          provide: CACHE_MANAGER,
+          useValue: {
+            set: () => true,
+            get: () => true,
+            del: () => true,
+          },
+        },
+      ],
     }).compile();
     service = module.get<MemberService>(MemberService);
     prisma = module.get<PrismaService>(PrismaService);

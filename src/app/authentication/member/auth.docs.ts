@@ -2,6 +2,7 @@ import { SwaggerObject } from '@infrastructure/types/type';
 import { applyDecorators } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiOkResponse,
   ApiOperation,
   ApiQuery,
@@ -12,6 +13,7 @@ import { MemberAuthInterface } from './auth.interface';
 import { AuthResponse } from './response/auth.response';
 import { CredentialResponse } from './response/credential.response';
 import { UserUniqueCredential } from './type';
+import { CommonResponseDto } from '@app/common.response.dto';
 
 export const MemberAuthDocs: SwaggerObject<MemberAuthInterface> = {
   Controller: applyDecorators(ApiTags('Auth - Member')),
@@ -41,5 +43,21 @@ export const MemberAuthDocs: SwaggerObject<MemberAuthInterface> = {
     }),
     ApiOkResponse({ type: CredentialResponse }),
     ApiBadRequestResponse({ description: '지원하지 않는 Credential Type' }),
+  ),
+  confirmEmail: applyDecorators(
+    ApiBearerAuth(),
+    ApiOperation({
+      summary: '사용자 이메일 인증을 위한 이메일을 전송합니다.',
+    }),
+    ApiOkResponse({ type: CommonResponseDto }),
+    ApiBadRequestResponse({
+      description: [
+        'ID에 해당하는 사용자가 없습니다.',
+        '사용자가 이미 인증을 완료했습니다.',
+      ].join(','),
+    }),
+  ),
+  confirmEmailCode: applyDecorators(
+    ApiOperation({ summary: '이메일 코드를 인증합니다.' }),
   ),
 };

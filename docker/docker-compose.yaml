@@ -1,0 +1,47 @@
+version: '3.7'
+services:
+  master:
+    container_name: redis-master
+    image: redis:7.2
+    ports:
+      - 6379:6379
+  db:
+    image: mysql
+    ports:
+      - '3306:3306'
+    restart: 'unless-stopped'
+    environment:
+      - MYSQL_ROOT_PASSWORD=hoplin1234!
+      - MYSQL_ROOT_HOST=%
+      - MYSQL_DATABASE=dsc-be
+  slave-1:
+    container_name: slave-a
+    image: redis:7.2
+    ports:
+      - 6400:6379
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+      - redis-slave-1:/data
+    command: redis-server /usr/local/etc/redis/redis.conf
+  slave-2:
+    container_name: slave-b
+    image: redis:7.2
+    ports:
+      - 6401:6379
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+      - redis-slave-2:/data
+    command: redis-server /usr/local/etc/redis/redis.conf
+  redis-manager:
+    container_name: redis-replica-manager
+    image: rediscommander/redis-commander:latest
+    restart: always
+    environment:
+      - REDIS_HOSTS=master:master,slave-1:slave-1,slave-2:slave-2
+    ports:
+      - 9000:8081
+volumes:
+  redis-slave-1:
+    external: false
+  redis-slave-2:
+    external: false

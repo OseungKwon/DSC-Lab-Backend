@@ -59,6 +59,16 @@ export default describe('Auth API', () => {
   describe('/assistant/auth', () => {
     /** Sign Up */
     describe('/signup (POST)', () => {
+      it("Should throw if it's not hongik mail domain", async () => {
+        const fakeSingup = {
+          ...assistant1Signup,
+        };
+        fakeSingup.email = 'fake@gmail.com';
+        return request(app.getHttpServer())
+          .post('/assistant/auth/signup')
+          .send(fakeSingup)
+          .expect(400);
+      });
       it('should sign up', () => {
         return request(app.getHttpServer())
           .post('/assistant/auth/signup')
@@ -138,6 +148,16 @@ export default describe('Auth API', () => {
   describe('/user/auth', () => {
     /** Sign Up */
     describe('/signup (POST)', () => {
+      it("should throw if it's not hongik mail domain", async () => {
+        const fakeSignup = {
+          ...user1Signup,
+        };
+        fakeSignup.email = 'fake@gmail.com';
+        return request(app.getHttpServer())
+          .post('/user/auth/signup')
+          .send(fakeSignup)
+          .expect(400);
+      });
       it('should sign up', () => {
         return request(app.getHttpServer())
           .post('/user/auth/signup')

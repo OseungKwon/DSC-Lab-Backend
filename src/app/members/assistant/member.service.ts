@@ -6,7 +6,6 @@ import { PrismaService } from '@app/prisma/prisma.service';
 import {
   PaginationCounter,
   assistantProfileDirectory,
-  userProfileDirectory,
 } from '@infrastructure/util';
 import {
   BadRequestException,
@@ -26,23 +25,17 @@ export class AssistantMemberService implements AssistantMemberInterface {
     private readonly prisma: PrismaService,
     private readonly s3: AwsS3Service,
   ) {}
-  async getProfile(aid: string) {
+  async getProfile(aid: number) {
     const result = await this.prisma.assistant.findUnique({
       where: {
         id: aid,
       },
     });
-
-    /** Issue presigned URL */
-    result[this.profileURLProperty] = await this.s3.getSignedURL(
-      result.profileImageKey,
-      assistantProfileDirectory,
-    );
-
     /** Delet user password hash */
     delete result.password;
     return result;
   }
+
   async editProfile(
     assistant: Assistant,
     dto: EditAssistantDto,
@@ -58,12 +51,15 @@ export class AssistantMemberService implements AssistantMemberInterface {
     }
 
     /** Upload file */
-    let userFileKey = assistant.profileImageKey;
+    let profileURL = assistant.profileURL;
+    let imageKey = assistant.profileKey;
     if (file) {
-      /** Remove previous profile image. Do not wait this task */
-      this.s3.removeObject(userFileKey, assistantProfileDirectory);
+      /** Remove previous image file */
+      this.s3.removeObject(imageKey, assistantProfileDirectory);
+
       /** Upload new profile image */
-      userFileKey = await this.s3.uploadFile(file, assistantProfileDirectory);
+      imageKey = await this.s3.uploadFile(file, assistantProfileDirectory);
+      profileURL = this.s3.getStaticURL(imageKey, assistantProfileDirectory);
     }
 
     const [updatedAssistant] = await this.prisma.$transaction([
@@ -75,20 +71,16 @@ export class AssistantMemberService implements AssistantMemberInterface {
           ? {
               name: dto.name,
               password: await bcrypt.hash(dto.changedPassword, hashCount),
-              profileImageKey: userFileKey,
+              profileURL: profileURL,
+              profileKey: imageKey,
             }
           : {
               name: dto.name,
-              profileImageKey: userFileKey,
+              profileKey: imageKey,
+              profileURL: profileURL,
             },
       }),
     ]);
-
-    /** Issue presigned URL */
-    updatedAssistant[this.profileURLProperty] = await this.s3.getSignedURL(
-      userFileKey,
-      assistantProfileDirectory,
-    );
 
     /** Delete user password */
     delete updatedAssistant.password;
@@ -151,19 +143,13 @@ export class AssistantMemberService implements AssistantMemberInterface {
     return users;
   }
 
-  async getUserInfo(uid: string) {
+  async getUserInfo(uid: number) {
     try {
       const user = await this.prisma.user.findUniqueOrThrow({
         where: {
           id: uid,
         },
       });
-
-      /** Issue presigned URL */
-      user[this.profileURLProperty] = await this.s3.getSignedURL(
-        user.profileImageKey,
-        userProfileDirectory,
-      );
 
       /** Delete user password hash */
       delete user.password;
@@ -176,7 +162,7 @@ export class AssistantMemberService implements AssistantMemberInterface {
     }
   }
 
-  async changeUserStatus(uid: string, dto: ChangeUserStatusDto) {
+  async changeUserStatus(uid: number, dto: ChangeUserStatusDto) {
     try {
       await this.prisma.user.findUniqueOrThrow({
         where: {

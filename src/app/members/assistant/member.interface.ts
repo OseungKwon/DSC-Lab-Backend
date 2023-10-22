@@ -4,7 +4,7 @@ import { EditAssistantDto } from '@app/members/assistant/dto/edit-assistant.dto'
 import { CommonReturnType } from '@infrastructure/types/type';
 
 export interface AssistantMemberInterface {
-  getProfile(aid: string): CommonReturnType;
+  getProfile(aid: number): CommonReturnType;
 
   editProfile(
     assistant: Assistant,
@@ -16,7 +16,7 @@ export interface AssistantMemberInterface {
 
   getUserList(status: Status, page: number, size: number): CommonReturnType;
 
-  getUserInfo(uid: string): CommonReturnType;
+  getUserInfo(uid: number): CommonReturnType;
 
-  changeUserStatus(uid: string, dto: ChangeUserStatusDto): CommonReturnType;
+  changeUserStatus(uid: number, dto: ChangeUserStatusDto): CommonReturnType;
 }

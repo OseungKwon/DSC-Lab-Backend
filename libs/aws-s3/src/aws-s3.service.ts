@@ -4,10 +4,9 @@ import {
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { v4 } from 'uuid';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { Injectable } from '@nestjs/common';
+import { v4 } from 'uuid';
 
 /**
  * All of the AWS SDK version is Version 3
@@ -57,12 +56,26 @@ export class AwsS3Service {
       Key: s3SavedIn,
       ContentType: file.mimetype,
       Body: file.buffer,
+      ACL: 'public-read',
     });
+
     await this.s3Client.send(command);
     return fileKey;
   }
 
+  /** Make sure AWS S3 Bucket is set as ACL Activated */
+  /** This method is for common file url generator */
+  public getStaticURL(fileKey: string, directory: string) {
+    if (!fileKey) {
+      return null;
+    }
+    return `https://${process.env.AWS_S3_BUCKET}.s3.${
+      process.env.AWS_S3_Region
+    }.amazonaws.com/${this.directoryBuilder(fileKey, directory)}`;
+  }
+
   /** Issue presigned URL */
+  /** This method is for file url generator which requires expire date*/
   public async getSignedURL(
     fileKey: string,
     directory: string,

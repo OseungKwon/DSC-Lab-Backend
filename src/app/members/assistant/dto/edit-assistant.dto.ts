@@ -11,7 +11,7 @@ export class EditAssistantDto {
   name: string;
 
   @ApiProperty({
-    example: 'changedpassword',
+    example: 'password',
     required: false,
   })
   @IsString()

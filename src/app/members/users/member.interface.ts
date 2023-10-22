@@ -4,7 +4,7 @@ import { User } from '@prisma/client';
 import { WithdrawServiceDTO } from './dto/withdraw-service.dto';
 
 export interface UserMemberInterface {
-  getProfile(uid: string): CommonReturnType;
+  getProfile(uid: number): CommonReturnType;
 
   editProfile(
     uid: User,
