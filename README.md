@@ -8,17 +8,24 @@
 
 ---
 
+### Development
+
 - TypeScript
 - Nest.js(v.10), Express.js
 - Database
   - MySQL: MySQL 8.1
   - ORM: Prisma ORM
+- Cache
+  - Redis Cluster (1Master, 2Worker)
 - System Metrics, APM Monitoring
   - Grafana (Docker on-premise)
   - Prometheus (Docker on-premise)
   - InfluxDB (Docker on-premise)
 - Issue Tracking
   - Sentry (It can be change to custom exception tracker)
+
+### Production
+
 - AWS (Including future usage)
   - AWS EC2
   - AWS S3
