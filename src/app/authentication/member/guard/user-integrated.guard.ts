@@ -3,6 +3,6 @@ import { UserValidateGuard } from './user-validate.guard';
 import { MemberGuard } from './user-jwt.guard';
 
 export const IntegratedUserGuard = applyDecorators(
-  UseGuards(UserValidateGuard),
   UseGuards(MemberGuard),
+  UseGuards(UserValidateGuard),
 );

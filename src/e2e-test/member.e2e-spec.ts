@@ -75,6 +75,16 @@ export default describe('Member API', () => {
           .expect(201);
         user1Accesstoken = user1SignUpResult.body.accessToken;
 
+        /** Change user1 as approve state */
+        await prisma.user.update({
+          where: {
+            email: user1Signup.email,
+          },
+          data: {
+            status: 'Approved',
+          },
+        });
+
         /** Assistant1 Access Token */
         const assistant1SignUpResult = await request(app.getHttpServer())
           .post('/assistant/auth/signup')
@@ -108,7 +118,7 @@ export default describe('Member API', () => {
       return request(app.getHttpServer()).get('/assistant/member').expect(401);
     });
 
-    it('should throw if assistant not found', () => {
+    it('should return if user is not assistant', () => {
       return request(app.getHttpServer())
         .get('/assistant/member')
         .set('Authorization', `Bearer ${user1Accesstoken}`)
@@ -239,11 +249,11 @@ export default describe('Member API', () => {
       return request(app.getHttpServer()).get('/user/member').expect(401);
     });
 
-    it('should throw if user yet approved', () => {
+    it('should return profile', () => {
       return request(app.getHttpServer())
         .get('/user/member')
         .set('Authorization', `Bearer ${user1Accesstoken}`)
-        .expect(403);
+        .expect(200);
     });
   });
 
