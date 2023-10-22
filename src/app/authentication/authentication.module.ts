@@ -3,6 +3,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { AssistantModule } from './assistant/auth.module';
 import { MemberModule } from './member/auth.module';
 import { RouterModule } from '@nestjs/core';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [

@@ -1,4 +1,4 @@
-import { MemberGuard } from '@app/authentication/member/guard/user-jwt.guard';
+import { IntegratedUserGuard } from '@app/authentication/member/guard/user-integrated.guard';
 import { GetUser } from '@app/authorization/decorator/get-user.decorator';
 import { EditProfileDto } from '@app/members/users/dto/edit-profile.dto';
 import { FileNameEncoderPipe } from '@infrastructure/util';
@@ -11,7 +11,6 @@ import {
   Get,
   Patch,
   UploadedFile,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -22,7 +21,7 @@ import { UserMemberInterface } from './member.interface';
 import { UserMemberService } from './member.service';
 
 @Controller()
-@UseGuards(MemberGuard)
+@IntegratedUserGuard
 @UserMemberDocs.Controller
 export class UserMemberController implements UserMemberInterface {
   constructor(private readonly memberService: UserMemberService) {}

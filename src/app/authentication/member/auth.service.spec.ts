@@ -13,6 +13,8 @@ import {
 } from 'test/payload.test';
 import { MemberService } from './auth.service';
 import { UserUniqueCredential } from './type';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { MailService } from '@app/mail/mail.service';
 
 describe('MemberService', () => {
   let service: MemberService;
@@ -28,7 +30,23 @@ describe('MemberService', () => {
         JwtModule.register({}),
         ConfigModule.forRoot(configOptions),
       ],
-      providers: [MemberService],
+      providers: [
+        MemberService,
+        {
+          provide: MailService,
+          useValue: {
+            sendMail: () => true,
+          },
+        },
+        {
+          provide: CACHE_MANAGER,
+          useValue: {
+            set: () => true,
+            get: () => true,
+            del: () => true,
+          },
+        },
+      ],
     }).compile();
     service = module.get<MemberService>(MemberService);
     prisma = module.get<PrismaService>(PrismaService);

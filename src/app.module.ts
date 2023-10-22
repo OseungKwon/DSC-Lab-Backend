@@ -15,11 +15,19 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { TaskModule } from '@app/scheduler-task/task.module';
 import { AwsS3Module } from '@s3/aws-s3';
 import { MailModule } from '@app/mail/mail.module';
+import { CacheModule } from '@nestjs/cache-manager';
+import { redisStore } from 'cache-manager-redis-yet';
+import type { RedisClientOptions } from 'redis';
 
 @Module({
   imports: [
     LoggerModule.forRoot(LoggerModuleConfig),
     ConfigModule.forRoot(configOptions),
+    CacheModule.register<RedisClientOptions>({
+      isGlobal: true,
+      store: redisStore,
+      url: process.env.REDIS_URL,
+    }),
     AlertModule.forRootAsync({
       imports: [ConfigModule],
       type: 'mail',
