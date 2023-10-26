@@ -1,15 +1,26 @@
-import { AlertService } from '@app/alert/alert.strategy.interface';
-import { InternalExceptionFilter } from '@infrastructure/exception/exception.filter';
 import { SwaggerDefinition } from '@infrastructure/swagger';
 import { ValidationPipe } from '@nestjs/common';
-import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
 import { SwaggerModule } from '@nestjs/swagger';
+import * as Sentry from '@sentry/node';
 import { AppModule } from './app.module';
+import { GlobalFilter } from '@infrastructure/filter';
 
 async function bootstrap() {
   // Nest.js Http REST Service
   const app = await NestFactory.create(AppModule);
-  const alertService = app.get<AlertService>(AlertService);
+  const adapter = app.getHttpAdapter();
+
+  // Intiate Sentry
+  Sentry.init({
+    environment: process.env.ENVIRONMNET,
+    dsn: process.env.SENTRY_DNS,
+    integrations: [
+      new Sentry.Integrations.Http({ tracing: true }),
+      new Sentry.Integrations.Express({ app: adapter.getInstance() }),
+    ],
+  });
+
   // Nest Application config
   app.enableCors();
   // app.useGlobalFilters(
@@ -20,6 +31,10 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
+
+  // Apply Global Filter
+  app.useGlobalFilters(new GlobalFilter(adapter));
+
   // Swagger document
   const { config, options } = SwaggerDefinition();
   const document = SwaggerModule.createDocument(app, config.build());

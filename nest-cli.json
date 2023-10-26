@@ -10,6 +10,7 @@
         "outDir": "./dist"
       }
     ],
+    "plugins": ["@nestjs/swagger"],
     "webpack": true
   },
   "projects": {
