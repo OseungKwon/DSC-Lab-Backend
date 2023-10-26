@@ -1,4 +1,9 @@
+// Standard Packages
+
+// Third-party Packages
 import { ValidationArguments, registerDecorator } from 'class-validator';
+
+// Custom Packages
 
 /** Allowed Hongik Email Domain
  *

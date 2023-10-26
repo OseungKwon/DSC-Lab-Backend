@@ -1,5 +1,4 @@
-import { SwaggerObject } from '@infrastructure/types/type';
-import { AssistantMemberInterface } from '@app/members/assistant/member.interface';
+// Standard Packages
 import { applyDecorators } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -11,11 +10,17 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+
+// Third-party Packages
 import { Status } from '@prisma/client';
+
+// Custom Packages
+import { AssistantMemberInterface } from '@app/members/assistant/member.interface';
+import { SwaggerObject } from '@infrastructure/types/type';
+import { FileErrorDocs } from '@infrastructure/util/multer-option.factory';
+import { GetUserOverviewResponse } from './response';
 import { GetAssistantResponse } from './response/get-assistant.response';
 import { GetUserResponse } from './response/get-user.response';
-import { GetUserOverviewResponse } from './response';
-import { FileErrorDocs } from '@infrastructure/util/multer-option.factory';
 
 export const AssistantMemberDocs: SwaggerObject<AssistantMemberInterface> = {
   Controller: applyDecorators(ApiTags('Member - Assistant'), ApiBearerAuth()),

@@ -1,4 +1,9 @@
+// Standard Packages
+
+// Third-party Packages
 import { Assistant, Status } from '@prisma/client';
+
+// Custom Packages
 import { ChangeUserStatusDto } from '@app/members/assistant/dto/change-user-status.dto';
 import { EditAssistantDto } from '@app/members/assistant/dto/edit-assistant.dto';
 import { CommonReturnType } from '@infrastructure/types/type';

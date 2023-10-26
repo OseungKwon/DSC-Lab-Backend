@@ -1,10 +1,14 @@
+// Standard Packages
 import {
   CanActivate,
   ExecutionContext,
   ForbiddenException,
 } from '@nestjs/common';
+// Third-party Packages
 import { User } from '@prisma/client';
 import { Request } from 'express';
+
+// Custom Packages
 
 export class UserValidateGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {

@@ -1,10 +1,17 @@
-import { PrismaModule } from '@app/prisma/prisma.module';
-import { PrismaService } from '@app/prisma/prisma.service';
+// Standard Packages
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
+
+// Third-party Packages
 import { User } from '@prisma/client';
+
+// Custom Packages
+import { MailService } from '@app/mail/mail.service';
+import { PrismaModule } from '@app/prisma/prisma.module';
+import { PrismaService } from '@app/prisma/prisma.service';
 import { configOptions } from 'src/module-config/config.config';
 import {
   Assistant1SignInDto,
@@ -13,8 +20,6 @@ import {
 } from 'test/payload.test';
 import { MemberService } from './auth.service';
 import { UserUniqueCredential } from './type';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { MailService } from '@app/mail/mail.service';
 
 describe('MemberService', () => {
   let service: MemberService;

@@ -1,5 +1,10 @@
+// Standard Packages
 import { GoneException, NestMiddleware } from '@nestjs/common';
+
+// Third-party Packages
 import { Request, Response, NextFunction } from 'express';
+
+// Custom Packages
 
 /** If endpoint is for development mode only */
 export class DevOnlyMiddleware implements NestMiddleware {

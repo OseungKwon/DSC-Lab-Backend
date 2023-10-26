@@ -1,4 +1,4 @@
-import { SwaggerObject } from '@infrastructure/types/type';
+// Standard Packages
 import { applyDecorators } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -8,6 +8,10 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+// Third-party Packages
+
+// Custom Packages
+import { SwaggerObject } from '@infrastructure/types/type';
 import { AuthResponse } from '../member/response/auth.response';
 import { CredentialResponse } from '../member/response/credential.response';
 import { AssistantAuthInterface } from './auth.interface';

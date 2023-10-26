@@ -1,8 +1,13 @@
-import { EmailInformationLost } from '@infrastructure/exception/alert';
-import { FilteredException } from '@infrastructure/types/type';
+// Standard Packages
 import { Inject, Injectable, Logger } from '@nestjs/common';
+
+// Third-party Packages
 import { SendMailOptions, createTransport } from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
+
+// Custom Packages
+import { EmailInformationLost } from '@infrastructure/exception/alert';
+import { FilteredException } from '@infrastructure/types/type';
 import { AlertService } from '../alert.strategy.interface';
 import {
   alertDescription,

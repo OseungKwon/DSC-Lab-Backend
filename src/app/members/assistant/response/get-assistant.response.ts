@@ -1,5 +1,10 @@
+// Standard Packages
 import { ApiProperty } from '@nestjs/swagger';
+
+// Third-party Packages
 import { $Enums, Assistant } from '@prisma/client';
+
+// Custom Packages
 
 /**https://www.prisma.io/typescript */
 

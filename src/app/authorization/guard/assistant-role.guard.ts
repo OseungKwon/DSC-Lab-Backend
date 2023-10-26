@@ -1,3 +1,4 @@
+// Standard Packages
 import {
   CanActivate,
   ExecutionContext,
@@ -5,9 +6,13 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { AvailableAssistant } from '../decorator';
+
+// Third-party Packages
 import { Request } from 'express';
 import { Assistant, AssistantRole } from '@prisma/client';
+
+// Custom Packages
+import { AvailableAssistant } from '../decorator';
 import { EnumToArray } from '@infrastructure/util/enumToArray';
 
 @Injectable()

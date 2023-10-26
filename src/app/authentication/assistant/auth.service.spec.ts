@@ -1,10 +1,15 @@
-import { PrismaModule } from '@app/prisma/prisma.module';
-import { PrismaService } from '@app/prisma/prisma.service';
+// Standard Packages
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
+
+// Third-party Packages
 import { Assistant } from '@prisma/client';
+
+// Custom Packages
+import { PrismaModule } from '@app/prisma/prisma.module';
+import { PrismaService } from '@app/prisma/prisma.service';
 import { configOptions } from 'src/module-config/config.config';
 import { User1SignInDto, generateRandomAssistant } from 'test/payload.test';
 import { AssistantAuthService } from './auth.service';

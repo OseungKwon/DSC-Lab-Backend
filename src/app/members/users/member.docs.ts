@@ -1,5 +1,4 @@
-import { SwaggerObject } from '@infrastructure/types/type';
-import { FileErrorDocs } from '@infrastructure/util/multer-option.factory';
+// Standard Packages
 import { applyDecorators } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -8,6 +7,12 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+
+// Third-party Packages
+
+// Custom Packages
+import { SwaggerObject } from '@infrastructure/types/type';
+import { FileErrorDocs } from '@infrastructure/util/multer-option.factory';
 import { UserMemberInterface } from './member.interface';
 import { GetUserResponse } from './response/get-user.response';
 
