@@ -1,15 +1,4 @@
-import { AssistantGuard } from '@app/authentication/assistant/guard/assistant-jwt.guard';
-import { AvailableAssistant } from '@app/authorization/decorator';
-import { GetAssistant } from '@app/authorization/decorator/get-assistant.decorator';
-import { AssistantRoleGuard } from '@app/authorization/guard';
-import { ChangeUserStatusDto } from '@app/members/assistant/dto/change-user-status.dto';
-import { EditAssistantDto } from '@app/members/assistant/dto/edit-assistant.dto';
-import { AssistantMemberDocs } from '@app/members/assistant/member.docs';
-import { AssistantMemberInterface } from '@app/members/assistant/member.interface';
-import { AssistantMemberService } from '@app/members/assistant/member.service';
-import { FileNameEncoderPipe } from '@infrastructure/util';
-import { ProfileImageConfig } from '@infrastructure/util/file-limit.config';
-import { FileLimitFactory } from '@infrastructure/util/multer-option.factory';
+// Standard Packages
 import {
   Body,
   Controller,
@@ -23,7 +12,23 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+
+// Third-party Packages
 import { Assistant, AssistantRole, Status } from '@prisma/client';
+
+// Custom Packages
+import { AssistantGuard } from '@app/authentication/assistant/guard/assistant-jwt.guard';
+import { AvailableAssistant } from '@app/authorization/decorator';
+import { GetAssistant } from '@app/authorization/decorator/get-assistant.decorator';
+import { AssistantRoleGuard } from '@app/authorization/guard';
+import { ChangeUserStatusDto } from '@app/members/assistant/dto/change-user-status.dto';
+import { EditAssistantDto } from '@app/members/assistant/dto/edit-assistant.dto';
+import { AssistantMemberDocs } from '@app/members/assistant/member.docs';
+import { AssistantMemberInterface } from '@app/members/assistant/member.interface';
+import { AssistantMemberService } from '@app/members/assistant/member.service';
+import { FileNameEncoderPipe } from '@infrastructure/util';
+import { ProfileImageConfig } from '@infrastructure/util/file-limit.config';
+import { FileLimitFactory } from '@infrastructure/util/multer-option.factory';
 
 @Controller()
 @UseGuards(AssistantGuard)

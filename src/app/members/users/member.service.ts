@@ -1,15 +1,20 @@
-import { hashCount } from '@app/authentication/common';
-import { EditProfileDto } from '@app/members/users/dto/edit-profile.dto';
-import { PrismaService } from '@app/prisma/prisma.service';
+// Standard Packages
 import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
+
+// Third-party Packages
 import { User } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import * as bcrypt from 'bcryptjs';
+
+// Custom Packages
+import { hashCount } from '@app/authentication/common';
+import { EditProfileDto } from '@app/members/users/dto/edit-profile.dto';
+import { PrismaService } from '@app/prisma/prisma.service';
 import { WithdrawServiceDTO } from './dto/withdraw-service.dto';
 import { UserMemberInterface } from './member.interface';
 import { userProfileDirectory } from '@infrastructure/util';

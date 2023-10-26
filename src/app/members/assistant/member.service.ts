@@ -1,3 +1,16 @@
+// Standard Packages
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+
+// Third-party Packages
+import { Assistant, Status } from '@prisma/client';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import * as bcrypt from 'bcryptjs';
+
+// Custom Packages
 import { hashCount } from '@app/authentication/common';
 import { ChangeUserStatusDto } from '@app/members/assistant/dto/change-user-status.dto';
 import { EditAssistantDto } from '@app/members/assistant/dto/edit-assistant.dto';
@@ -7,15 +20,7 @@ import {
   PaginationCounter,
   assistantProfileDirectory,
 } from '@infrastructure/util';
-import {
-  BadRequestException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { Assistant, Status } from '@prisma/client';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { AwsS3Service } from '@s3/aws-s3';
-import * as bcrypt from 'bcryptjs';
 import { GetUserOverviewResponse } from './response';
 
 @Injectable()

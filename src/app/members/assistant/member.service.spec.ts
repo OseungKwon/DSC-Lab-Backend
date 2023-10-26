@@ -1,16 +1,20 @@
+// Standard Packages
+import { BadRequestException, UnauthorizedException } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { Test, TestingModule } from '@nestjs/testing';
+
+// Third-party Packages
+import { Assistant, User } from '@prisma/client';
+
+// Custom Packages
+import { PrismaModule } from '@app/prisma/prisma.module';
 import { PrismaService } from '@app/prisma/prisma.service';
-import { AssistantMemberService } from './member.service';
+import { AwsS3Module } from '@s3/aws-s3';
 import {
   generateRandomAssistant,
   generateRandomMember,
 } from 'test/payload.test';
-import { User } from '@prisma/client';
-import { Assistant } from '@prisma/client';
-import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaModule } from '@app/prisma/prisma.module';
-import { BadRequestException, UnauthorizedException } from '@nestjs/common';
-import { AwsS3Module } from '@s3/aws-s3';
-import { ConfigModule } from '@nestjs/config';
+import { AssistantMemberService } from './member.service';
 
 describe('AssistantMemberService', () => {
   let service: AssistantMemberService;

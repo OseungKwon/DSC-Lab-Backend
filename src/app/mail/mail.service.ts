@@ -1,8 +1,13 @@
+// Standard Packages
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { MAIL_OPTION } from './mail.token';
-import { MailModuleOption, SendOption } from './type';
+
+// Third-party Packages
 import { SendMailOptions, createTransport } from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
+
+// Custom Packages
+import { MAIL_OPTION } from './mail.token';
+import { MailModuleOption, SendOption } from './type';
 
 @Injectable()
 export class MailService {

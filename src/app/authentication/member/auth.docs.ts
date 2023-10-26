@@ -1,4 +1,4 @@
-import { SwaggerObject } from '@infrastructure/types/type';
+// Standard Packages
 import { applyDecorators } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -9,11 +9,16 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+
+// Third-party Packages
+
+// Custom Packages
+import { CommonResponseDto } from '@app/common.response.dto';
+import { SwaggerObject } from '@infrastructure/types/type';
 import { MemberAuthInterface } from './auth.interface';
 import { AuthResponse } from './response/auth.response';
 import { CredentialResponse } from './response/credential.response';
 import { UserUniqueCredential } from './type';
-import { CommonResponseDto } from '@app/common.response.dto';
 
 export const MemberAuthDocs: SwaggerObject<MemberAuthInterface> = {
   Controller: applyDecorators(ApiTags('Auth - Member')),

@@ -1,5 +1,4 @@
-import { PrismaService } from '@app/prisma/prisma.service';
-import { JwtPayload } from '@infrastructure/types/type';
+// Standard Packages
 import {
   BadRequestException,
   Injectable,
@@ -7,8 +6,14 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+
+// Third-party Packages
 import { Assistant, Prisma } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
+
+// Custom Packages
+import { PrismaService } from '@app/prisma/prisma.service';
+import { JwtPayload } from '@infrastructure/types/type';
 import { expireDate, hashCount } from '../common';
 import { AuthResponse } from '../member/response/auth.response';
 import { AssistantAuthInterface } from './auth.interface';

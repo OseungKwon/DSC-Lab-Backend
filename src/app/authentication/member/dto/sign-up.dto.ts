@@ -1,7 +1,12 @@
-import { IsHongikEmailDomain } from '@app/authentication/decorator';
+// Standard Packages
 import { ApiProperty } from '@nestjs/swagger';
+
+// Third-party Packages
 import { UserRole } from '@prisma/client';
 import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+
+// Custom Packages
+import { IsHongikEmailDomain } from '@app/authentication/decorator';
 
 export class MemberSignUpDto {
   @ApiProperty({ example: 'student' })

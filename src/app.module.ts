@@ -1,6 +1,16 @@
-import { LoggerModule } from '@hoplin/nestjs-logger';
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+// Standard Packages
+import { ScheduleModule } from '@nestjs/schedule';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { CacheModule } from '@nestjs/cache-manager';
+
+// Third-party Packages
+import { LoggerModule } from '@hoplin/nestjs-logger';
+import { AwsS3Module } from '@s3/aws-s3';
+import { redisStore } from 'cache-manager-redis-yet';
+import type { RedisClientOptions } from 'redis';
+
+// Custom Packages
 import { AlertModule } from './app/alert/alert.module';
 import { AppController } from './app/app.controller';
 import { AppService } from './app/app.service';
@@ -11,13 +21,8 @@ import { LoggerModuleConfig } from './module-config/logger.config';
 import { PrismaModule } from './app/prisma/prisma.module';
 import { DevOnlyMiddleware } from '@app/middlewares';
 import { MembersModule } from '@app/members/members.module';
-import { ScheduleModule } from '@nestjs/schedule';
 import { TaskModule } from '@app/scheduler-task/task.module';
-import { AwsS3Module } from '@s3/aws-s3';
 import { MailModule } from '@app/mail/mail.module';
-import { CacheModule } from '@nestjs/cache-manager';
-import { redisStore } from 'cache-manager-redis-yet';
-import type { RedisClientOptions } from 'redis';
 
 @Module({
   imports: [

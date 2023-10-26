@@ -1,3 +1,4 @@
+// Standard Packages
 import {
   CanActivate,
   ExecutionContext,
@@ -5,10 +6,14 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { AvailableUser } from '../decorator';
-import { EnumToArray } from '@infrastructure/util';
+
+// Third-party Packages
 import { Status, User, UserRole } from '@prisma/client';
 import { Request } from 'express';
+
+// Custom Packages
+import { AvailableUser } from '../decorator';
+import { EnumToArray } from '@infrastructure/util';
 
 @Injectable()
 export class UserRoleGuard implements CanActivate {

@@ -1,4 +1,9 @@
+// Standard Packages
 import { Body, Controller, Get, HttpCode, Post, Query } from '@nestjs/common';
+
+// Third-party Packages
+
+// Custom Packages
 import { AssistantAuthInterface } from './auth.interface';
 import { AssistantSignInDto } from './dto/sign-in.dto';
 import { AssistantSignUpDto } from './dto/sign-up.dto';

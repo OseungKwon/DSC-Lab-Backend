@@ -1,9 +1,4 @@
-import { IntegratedUserGuard } from '@app/authentication/member/guard/user-integrated.guard';
-import { GetUser } from '@app/authorization/decorator/get-user.decorator';
-import { EditProfileDto } from '@app/members/users/dto/edit-profile.dto';
-import { FileNameEncoderPipe } from '@infrastructure/util';
-import { ProfileImageConfig } from '@infrastructure/util/file-limit.config';
-import { FileLimitFactory } from '@infrastructure/util/multer-option.factory';
+// Standard Packages
 import {
   Body,
   Controller,
@@ -14,7 +9,17 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+
+// Third-party Packages
 import { User } from '@prisma/client';
+
+// Custom Packages
+import { IntegratedUserGuard } from '@app/authentication/member/guard/user-integrated.guard';
+import { GetUser } from '@app/authorization/decorator/get-user.decorator';
+import { EditProfileDto } from '@app/members/users/dto/edit-profile.dto';
+import { FileNameEncoderPipe } from '@infrastructure/util';
+import { ProfileImageConfig } from '@infrastructure/util/file-limit.config';
+import { FileLimitFactory } from '@infrastructure/util/multer-option.factory';
 import { WithdrawServiceDTO } from './dto/withdraw-service.dto';
 import { UserMemberDocs } from './member.docs';
 import { UserMemberInterface } from './member.interface';

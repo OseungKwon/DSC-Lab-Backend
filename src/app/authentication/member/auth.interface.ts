@@ -1,7 +1,11 @@
+// Standard Packages
+
+// Third-party Packages
+
+// Custom Packages
 import { CommonReturnType } from '@infrastructure/types/type';
-import { MemberSignUpDto } from './dto/sign-up.dto';
 import { MemberSignInDto } from './dto/sign-in.dto';
-import { ConfirmEmailDto } from './dto/confirm-email.dto';
+import { MemberSignUpDto } from './dto/sign-up.dto';
 
 export interface MemberAuthInterface {
   signup(dto: MemberSignUpDto): CommonReturnType;

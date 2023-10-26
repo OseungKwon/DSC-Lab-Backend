@@ -1,8 +1,13 @@
-import { SwaggerDefinition } from '@infrastructure/swagger';
+// Standard Packages
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule } from '@nestjs/swagger';
+
+// Third-party Packages
 import * as Sentry from '@sentry/node';
+
+// Custom Packages
+import { SwaggerDefinition } from '@infrastructure/swagger';
 import { AppModule } from './app.module';
 import { GlobalFilter } from '@infrastructure/filter';
 

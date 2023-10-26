@@ -1,7 +1,4 @@
-import { CommonResponseDto } from '@app/common.response.dto';
-import { MailService } from '@app/mail/mail.service';
-import { PrismaService } from '@app/prisma/prisma.service';
-import { JwtPayload } from '@infrastructure/types/type';
+// Standard Packages
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import {
   BadRequestException,
@@ -11,15 +8,23 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+
+// Third-party Packages
 import { Prisma, Status, User } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import * as bcrypt from 'bcryptjs';
 import { Cache } from 'cache-manager';
 import { v4 } from 'uuid';
+
+// Custom Packages
+
+import { CommonResponseDto } from '@app/common.response.dto';
+import { MailService } from '@app/mail/mail.service';
+import { PrismaService } from '@app/prisma/prisma.service';
+import { JwtPayload } from '@infrastructure/types/type';
 import { expireDate, hashCount } from '../common';
 import { emailConfirmTemplate } from '../template/email-confirm.template';
 import { MemberAuthInterface } from './auth.interface';
-import { ConfirmEmailDto } from './dto/confirm-email.dto';
 import { MemberSignInDto } from './dto/sign-in.dto';
 import { MemberSignUpDto } from './dto/sign-up.dto';
 import { AuthResponse } from './response/auth.response';

@@ -1,4 +1,9 @@
+// Standard Packages
 import { Module } from '@nestjs/common';
+
+// Third-party Packages
+
+// Custom Packages
 
 import { AssistantMemberService } from '@app/members/assistant/member.service';
 import { AssistantMemberController } from './member.controller';

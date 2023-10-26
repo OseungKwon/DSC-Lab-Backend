@@ -1,5 +1,10 @@
+// Standard Packages
 import { ApiProperty } from '@nestjs/swagger';
+
+// Third-party Packages
 import { $Enums, User } from '@prisma/client';
+
+// Custom Packages
 
 export class GetUserResponse implements Omit<User, 'password'> {
   @ApiProperty()

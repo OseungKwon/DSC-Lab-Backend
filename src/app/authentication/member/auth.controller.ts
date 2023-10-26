@@ -1,23 +1,26 @@
+// Standard Packages
 import {
   Body,
   Controller,
   Get,
   HttpCode,
-  Param,
   ParseIntPipe,
   Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
+
+// Third-party Packages
+
+// Custom Packages
+import { GetUser } from '@app/authorization/decorator/get-user.decorator';
 import { MemberAuthDocs } from './auth.docs';
 import { MemberAuthInterface } from './auth.interface';
 import { MemberService } from './auth.service';
 import { MemberSignInDto } from './dto/sign-in.dto';
 import { MemberSignUpDto } from './dto/sign-up.dto';
-import { UserUniqueCredential } from './type';
-import { ConfirmEmailDto } from './dto/confirm-email.dto';
 import { MemberGuard } from './guard/user-jwt.guard';
-import { GetUser } from '@app/authorization/decorator/get-user.decorator';
+import { UserUniqueCredential } from './type';
 
 @Controller()
 @MemberAuthDocs.Controller
