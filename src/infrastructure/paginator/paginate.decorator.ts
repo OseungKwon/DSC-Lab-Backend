@@ -27,8 +27,8 @@ export const Paginate = createParamDecorator(
     const skip = paginateOptionValidator(parseInt(query.skip), 'skip');
     const take = paginateOptionValidator(parseInt(query.limit), 'take');
     return {
-      skip,
-      take,
+      skip: (skip - 1) * take,
+      take: take,
     };
   },
 );

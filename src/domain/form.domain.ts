@@ -20,7 +20,7 @@ export class FormDomain implements Form {
   isArchived: boolean;
 
   @ApiProperty()
-  editable: boolean;
+  isEditable: boolean;
 
   @ApiProperty()
   accessType: $Enums.UserRole;

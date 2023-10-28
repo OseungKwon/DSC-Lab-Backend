@@ -13,9 +13,12 @@ import {
 import { FormFilterDocs, PaginateDocs } from '@infrastructure/paginator';
 import { SwaggerObject } from '@infrastructure/types/type';
 import { AssistantFormInterface } from './form.interface';
-import { GetFormResponse } from './response';
-import { ListFormResponse } from './response/list-form.response';
-import { CreateFormResponse } from './response/create-form.response';
+import {
+  GetFormResponse,
+  ListFormResponse,
+  CreateFormResponse,
+  UpdateFormResponse,
+} from './response';
 
 export const AssistantFormDocs: SwaggerObject<AssistantFormInterface> = {
   Controller: applyDecorators(ApiTags('Form - Assistant'), ApiBearerAuth()),
@@ -45,6 +48,15 @@ export const AssistantFormDocs: SwaggerObject<AssistantFormInterface> = {
     }),
     ApiOkResponse({
       type: CreateFormResponse,
+    }),
+  ),
+
+  updateForm: applyDecorators(
+    ApiOperation({
+      summary: 'Form 수정하기.',
+    }),
+    ApiOkResponse({
+      type: UpdateFormResponse,
     }),
   ),
 };

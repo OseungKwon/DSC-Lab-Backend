@@ -70,7 +70,7 @@ model Form {
   description String?
   isOpen      Boolean           @default(false)
   isArchived  Boolean           @default(false) // Archived mean deleted
-  editable    Boolean           @default(false)
+  isEditable  Boolean           @default(false)
   opendAt     DateTime?
   closedAt    DateTime?
   // 1:N Relation with Assistant

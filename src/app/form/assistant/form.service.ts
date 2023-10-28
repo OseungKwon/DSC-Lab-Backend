@@ -7,7 +7,8 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { AssistantFormInterface } from './form.interface';
 import { FormFilterType, PaginateOption } from '@infrastructure/paginator';
 import { PrismaService } from '@app/prisma/prisma.service';
-import { CreateFormDto } from './dto';
+import { CreateFormDto, UpdateFormDto } from './dto';
+import { Form } from '@prisma/client';
 
 @Injectable()
 export class AssistantFormService implements AssistantFormInterface {
@@ -33,11 +34,17 @@ export class AssistantFormService implements AssistantFormInterface {
         },
       },
     });
+    console.log(paginateOption);
+    console.log(formFilter);
 
     delete formFilter.Where['isOpen'];
 
     /** Aggregate per category */
     const aggreate = await this.prisma.form.groupBy({
+      where: {
+        assistantId: aid,
+        ...formFilter.Where,
+      },
       by: ['isOpen'],
       _count: {
         _all: true,
@@ -95,6 +102,7 @@ export class AssistantFormService implements AssistantFormInterface {
 
   async createForm(aid: number, dto: CreateFormDto) {
     const { title } = dto;
+    /** Create form with default section, question, answer */
     const createdForm = await this.prisma.form.create({
       data: {
         title,
@@ -133,6 +141,31 @@ export class AssistantFormService implements AssistantFormInterface {
       },
     });
     return createdForm;
+  }
+
+  async updateForm(aid: number, fid: number, dto: UpdateFormDto) {
+    let form: Form;
+    try {
+      form = await this.prisma.form.findUniqueOrThrow({
+        where: {
+          id: fid,
+          assistantId: aid,
+        },
+      });
+    } catch (err) {
+      throw new BadRequestException('FORM_NOT_FOUND');
+    }
+    const [updatedForm] = await this.prisma.$transaction([
+      this.prisma.form.update({
+        where: {
+          id: fid,
+        },
+        data: {
+          ...dto,
+        },
+      }),
+    ]);
+    return updatedForm;
   }
 
   private createDefaulChoices() {

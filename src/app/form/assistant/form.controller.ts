@@ -1,5 +1,14 @@
 // Standard packages
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 
 // Third-party Packages
 
@@ -15,7 +24,7 @@ import {
   FormFilter,
   FormFilterType,
 } from '@infrastructure/paginator';
-import { CreateFormDto } from './dto';
+import { CreateFormDto, UpdateFormDto } from './dto';
 
 @Controller()
 @UseGuards(AssistantGuard)
@@ -26,7 +35,7 @@ export class AssistantFormController implements AssistantFormInterface {
   @Get()
   @AssistantFormDocs.listForm
   listForm(
-    @GetAssistant('id') aid: number,
+    @GetAssistant('id', ParseIntPipe) aid: number,
     @Paginate() paginateOption: PaginateOption,
     @FormFilter() formFilter: FormFilterType,
   ) {
@@ -35,13 +44,29 @@ export class AssistantFormController implements AssistantFormInterface {
 
   @Get(':fid')
   @AssistantFormDocs.getForm
-  getForm(@GetAssistant('id') aid: number, @Param('fid') fid: number) {
+  getForm(
+    @GetAssistant('id', ParseIntPipe) aid: number,
+    @Param('fid', ParseIntPipe) fid: number,
+  ) {
     return this.formService.getForm(aid, fid);
   }
 
   @Post()
   @AssistantFormDocs.createForm
-  createForm(@GetAssistant('id') aid: number, @Body() dto: CreateFormDto) {
+  createForm(
+    @GetAssistant('id', ParseIntPipe) aid: number,
+    @Body() dto: CreateFormDto,
+  ) {
     return this.formService.createForm(aid, dto);
+  }
+
+  @Patch(':fid')
+  @AssistantFormDocs.updateForm
+  updateForm(
+    @GetAssistant('id', ParseIntPipe) aid: number,
+    @Param('fid', ParseIntPipe) fid: number,
+    @Body() dto: UpdateFormDto,
+  ) {
+    return this.formService.updateForm(aid, fid, dto);
   }
 }

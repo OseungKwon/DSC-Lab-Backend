@@ -1,7 +1,7 @@
 import { FormFilterType } from '@infrastructure/paginator/form.filter';
 import { PaginateOption } from '@infrastructure/paginator/paginate.decorator';
 import { CommonReturnType } from '@infrastructure/types/type';
-import { CreateFormDto } from './dto';
+import { CreateFormDto, UpdateFormDto } from './dto';
 
 export interface AssistantFormInterface {
   listForm(
@@ -13,4 +13,6 @@ export interface AssistantFormInterface {
   getForm(aid: number, fid: number): CommonReturnType;
 
   createForm(aid: number, dto: CreateFormDto): CommonReturnType;
+
+  updateForm(aid: number, fid: number, dto: UpdateFormDto): CommonReturnType;
 }
