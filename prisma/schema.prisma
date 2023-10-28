@@ -71,7 +71,6 @@ model Form {
   isOpen      Boolean           @default(false)
   isArchived  Boolean           @default(false) // Archived mean deleted
   editable    Boolean           @default(false)
-  accessType  UserRole
   opendAt     DateTime?
   closedAt    DateTime?
   // 1:N Relation with Assistant
@@ -106,7 +105,6 @@ model FormQuestion {
   content       String
   order         Int
   type          FormQuestionType
-  sectionId     Int
   // Choices
   choices       FormChoice[]
   // Answers

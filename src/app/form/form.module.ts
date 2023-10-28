@@ -12,7 +12,7 @@ import { UserFormModule } from './user/form.module';
         path: 'assistant',
         children: [
           {
-            path: 'form',
+            path: 'forms',
             module: AssistantFormModule,
           },
         ],
@@ -21,7 +21,7 @@ import { UserFormModule } from './user/form.module';
         path: 'user',
         children: [
           {
-            path: 'form',
+            path: 'forms',
             module: UserFormModule,
           },
         ],
