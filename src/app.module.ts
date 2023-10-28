@@ -23,6 +23,7 @@ import { DevOnlyMiddleware } from '@app/middlewares';
 import { MembersModule } from '@app/members/members.module';
 import { TaskModule } from '@app/scheduler-task/task.module';
 import { MailModule } from '@app/mail/mail.module';
+import { FormModule } from './app/form/form.module';
 
 @Module({
   imports: [
@@ -64,6 +65,7 @@ import { MailModule } from '@app/mail/mail.module';
     PrismaModule,
     MembersModule,
     TaskModule,
+    FormModule,
     AwsS3Module,
     ScheduleModule.forRoot(),
   ],

@@ -21,7 +21,7 @@ model Assistant {
   role       AssistantRole
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @updatedAt
-  Form       Form[]
+  forms      Form[]
 
   @@map("assistants")
 }
@@ -48,7 +48,7 @@ model User {
   loginAt         DateTime          @default(now()) // User last login date
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
-  FormAnswerSheet FormAnswerSheet[]
+  sheets          FormAnswerSheet[]
 
   @@map("users")
 }
@@ -69,7 +69,9 @@ model Form {
   title       String
   description String?
   isOpen      Boolean           @default(false)
+  isArchived  Boolean           @default(false) // Archived mean deleted
   editable    Boolean           @default(false)
+  accessType  UserRole
   opendAt     DateTime?
   closedAt    DateTime?
   // 1:N Relation with Assistant
@@ -94,7 +96,7 @@ model FormSection {
   questions   FormQuestion[]
   // 1:N Relation with Form
   formId      Int
-  form        Form           @relation(fields: [formId], references: [id])
+  form        Form           @relation(fields: [formId], references: [id], onDelete: Cascade)
 
   @@map("formSections")
 }
@@ -110,7 +112,7 @@ model FormQuestion {
   // Answers
   answers       FormAnswer[]
   // 1:N Relation with FormSection
-  section       FormSection      @relation(fields: [formSectionId], references: [id])
+  section       FormSection      @relation(fields: [formSectionId], references: [id], onDelete: Cascade)
   formSectionId Int
 
   @@map("formQuestions")
@@ -127,7 +129,7 @@ model FormChoice {
   order      Int
   // 1:N Relation with FormSction
   questionId Int
-  question   FormQuestion @relation(fields: [questionId], references: [id])
+  question   FormQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@map("formChoices")
 }
