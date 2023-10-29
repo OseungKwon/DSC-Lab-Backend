@@ -11,5 +11,8 @@ const userDirectoryBuilder = (directory: string) => {
 /** Assistant Profile Directory */
 export const assistantProfileDirectory = assistantDirectoryBuilder('profile');
 
-/** User Profile Director */
+/** User Profile Directory */
 export const userProfileDirectory = userDirectoryBuilder('profile');
+
+/** Form thumbnail Directory */
+export const formThumbnailDirectory = assistantDirectoryBuilder('form');

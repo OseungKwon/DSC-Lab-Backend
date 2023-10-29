@@ -40,6 +40,10 @@ describe('AssistantService', () => {
     await prisma.deleteAll();
   });
 
+  afterAll(async () => {
+    await prisma.deleteAll();
+  });
+
   describe('Assistant SingUp', () => {
     it('should sign up', async () => {
       const result = await service.signup(assistant1Signup);

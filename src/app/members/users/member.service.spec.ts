@@ -43,6 +43,10 @@ describe('UserMemberService', () => {
     });
   });
 
+  afterAll(async () => {
+    await prisma.deleteAll();
+  });
+
   describe('Get Profile (GET)', () => {
     it('should give user profile information', async () => {
       const result = await service.getProfile(user1.id);

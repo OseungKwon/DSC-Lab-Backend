@@ -10,31 +10,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 // For Assistant User
-model Assistant{
-  id              Int    @id @default(autoincrement())
-
-  name            String
-
-  password        String
-
-  email           String @unique()
-
-  profileKey      String? @default("")
-
-  profileURL      String? @default("")
-
-  role            AssistantRole
-
-  createdAt       DateTime @default(now())
-
-  updatedAt       DateTime @updatedAt
-
+model Assistant {
+  id         Int           @id @default(autoincrement())
+  name       String
+  password   String
+  email      String        @unique()
+  profileKey String?       @default("")
+  profileURL String?       @default("")
+  role       AssistantRole
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  forms      Form[]
 
   @@map("assistants")
 }
-
 
 enum AssistantRole {
   OfficeAssistant
@@ -43,47 +33,131 @@ enum AssistantRole {
 }
 
 // For professor and normal user. Student
-model User{
-  id              Int    @id @default(autoincrement())
-  
+model User {
+  id              Int               @id @default(autoincrement())
   name            String
-
-  nickname        String @unique()
-
+  nickname        String            @unique()
   password        String
+  email           String            @unique()
+  profileKey      String?           @default("")
+  profileURL      String?           @default("")
+  groupId         String            @unique() // 학번
+  role            UserRole // Role
+  status          Status            @default(Pending) // 회원 승인 여부
+  enrolledIn      DateTime          @default(now()) // Time user enrolled
+  loginAt         DateTime          @default(now()) // User last login date
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  sheets          FormAnswerSheet[]
 
-  email           String @unique() 
-
-  profileKey      String? @default("")
-
-  profileURL      String? @default("")
-  
-  groupId         String @unique() // 학번
-  
-  role            UserRole       // Role
-
-  status          Status   @default(Pending) // 회원 승인 여부
-
-  enrolledIn      DateTime @default(now()) // Time user enrolled
-
-  loginAt         DateTime @default(now()) // User last login date
-
-  createdAt       DateTime @default(now())
-
-  updatedAt       DateTime @updatedAt
-
-  @@map("members")
+  @@map("users")
 }
 
 enum UserRole {
   Student
-  Professor 
+  Professor
 }
 
 enum Status {
   Pending
   Approved
-  Reject 
+  Reject
 }
 
+model Form {
+  id          Int               @id @default(autoincrement())
+  title       String
+  description String?
+  isOpen      Boolean           @default(false)
+  isArchived  Boolean           @default(false) // Archived mean deleted
+  isEditable  Boolean           @default(false)
+  opendAt     DateTime?
+  closedAt    DateTime?
+  thumbnail   String?
+  // 1:N Relation with Assistant
+  assistantId Int
+  assistant   Assistant         @relation(fields: [assistantId], references: [id])
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  // Sections
+  sections    FormSection[]
+  // Form Sheet
+  sheets      FormAnswerSheet[]
+
+  @@map("forms")
+}
+
+model FormSection {
+  id          Int            @id @default(autoincrement())
+  title       String
+  description String?
+  order       Int
+  // Questions
+  questions   FormQuestion[]
+  // 1:N Relation with Form
+  formId      Int
+  form        Form           @relation(fields: [formId], references: [id], onDelete: Cascade)
+
+  @@map("formSections")
+}
+
+model FormQuestion {
+  id            Int              @id @default(autoincrement())
+  content       String
+  order         Int
+  type          FormQuestionType
+  // Choices
+  choices       FormChoice[]
+  // Answers
+  answers       FormAnswer[]
+  // 1:N Relation with FormSection
+  section       FormSection      @relation(fields: [formSectionId], references: [id], onDelete: Cascade)
+  formSectionId Int
+
+  @@map("formQuestions")
+}
+
+enum FormQuestionType {
+  WRITE
+  CHOICE
+}
+
+model FormChoice {
+  id         Int          @id @default(autoincrement())
+  content    String
+  order      Int
+  // 1:N Relation with FormSction
+  questionId Int
+  question   FormQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@map("formChoices")
+}
+
+model FormAnswerSheet {
+  id          Int          @id @default(autoincrement())
+  completedAt DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  // 1:N Relation with User
+  userId      Int
+  users       User         @relation(fields: [userId], references: [id])
+  // 1:N Relation with Form
+  formId      Int
+  forms       Form         @relation(fields: [formId], references: [id])
+  // Answers
+  FormAnswer  FormAnswer[]
+
+  @@map("formAnswerSheets")
+}
+
+model FormAnswer {
+  id                Int             @id @default(autoincrement())
+  // 1:N Relation with Form Answer Sheet
+  formAnswerSheetId Int
+  sheet             FormAnswerSheet @relation(fields: [formAnswerSheetId], references: [id])
+  // 1:N Relation with Question
+  question          FormQuestion    @relation(fields: [formQuestionId], references: [id])
+  formQuestionId    Int
   
+  @@map("formAnswers")
+}

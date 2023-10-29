@@ -51,6 +51,57 @@ Frontend Repository: https://github.com/Hongik-Univ-DSC-Re-New/DSC-Frontend
 
 5. Run E2E, Unit test before merge.
 
+6. Present swagger as best effort.
+
+7. Guarantee all of object in business logic to be **type-safe**
+
+## Run API and API Document
+
+1. Install dependencies
+
+```
+
+// yarn
+yarn install
+
+// npm
+npm install
+```
+
+2. Initialize Prisma ORM Schema.
+
+```
+// yarn
+yarn migrate
+
+// npm
+npm run migrate
+```
+
+3. Run Database & Redis Compose project
+
+```
+cd docker
+
+docker compose up -d
+```
+
+4. Run API Application
+
+```
+yarn dev
+```
+
+5. Connect to Swagger Document from your browser
+
+```
+localhost:3000/docs
+```
+
+## Entitiy Relation Diagram (Will update always)
+
+![erd](./dsc-be-erd.png)
+
 ## Run test code
 
 - E2E test
