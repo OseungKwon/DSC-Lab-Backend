@@ -153,13 +153,11 @@ model FormAnswerSheet {
 model FormAnswer {
   id                Int             @id @default(autoincrement())
   // 1:N Relation with Form Answer Sheet
-  sheetId           Int
+  formAnswerSheetId Int
   sheet             FormAnswerSheet @relation(fields: [formAnswerSheetId], references: [id])
   // 1:N Relation with Question
-  questionId        Int
   question          FormQuestion    @relation(fields: [formQuestionId], references: [id])
   formQuestionId    Int
-  formAnswerSheetId Int
-
+  
   @@map("formAnswers")
 }
