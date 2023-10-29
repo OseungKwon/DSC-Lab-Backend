@@ -1,5 +1,5 @@
 // Standard Packages
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiOperation, ApiProperty } from '@nestjs/swagger';
 // Third-party Packages
 import { $Enums, Form } from '@prisma/client';
 
@@ -10,25 +10,37 @@ export class FormDomain implements Form {
   @ApiProperty()
   title: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    required: false,
+  })
   description: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    required: false,
+  })
+  thumbnail: string;
+
+  @ApiProperty({
+    required: false,
+  })
   isOpen: boolean;
 
   @ApiProperty()
   isArchived: boolean;
 
-  @ApiProperty()
+  @ApiProperty({
+    required: false,
+  })
   isEditable: boolean;
 
-  @ApiProperty()
-  accessType: $Enums.UserRole;
-
-  @ApiProperty()
+  @ApiProperty({
+    required: false,
+  })
   opendAt: Date;
 
-  @ApiProperty()
+  @ApiProperty({
+    required: false,
+  })
   closedAt: Date;
 
   @ApiProperty()

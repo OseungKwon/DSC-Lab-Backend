@@ -14,5 +14,12 @@ export interface AssistantFormInterface {
 
   createForm(aid: number, dto: CreateFormDto): CommonReturnType;
 
-  updateForm(aid: number, fid: number, dto: UpdateFormDto): CommonReturnType;
+  updateForm(
+    aid: number,
+    fid: number,
+    dto: UpdateFormDto,
+    file: Express.Multer.File,
+  ): CommonReturnType;
+
+  deleteForm(aid: number, fid: number): CommonReturnType;
 }

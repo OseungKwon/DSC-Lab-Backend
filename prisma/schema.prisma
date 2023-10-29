@@ -73,6 +73,7 @@ model Form {
   isEditable  Boolean           @default(false)
   opendAt     DateTime?
   closedAt    DateTime?
+  thumbnail   String?
   // 1:N Relation with Assistant
   assistantId Int
   assistant   Assistant         @relation(fields: [assistantId], references: [id])

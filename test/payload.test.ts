@@ -9,6 +9,7 @@ import { AssistantRole, UserRole } from '@prisma/client';
 import { faker } from '@faker-js/faker';
 import * as bcrypt from 'bcryptjs';
 import { EditAssistantDto } from '@app/members/assistant/dto/edit-assistant.dto';
+import { CreateFormDto, UpdateFormDto } from '@app/form/assistant/dto';
 
 /**If user want to hash password in test data -> set hash to true*/
 export const generateRandomMember = (
@@ -119,3 +120,14 @@ export const Assistant1SignInDto: AssistantSignInDto = {
   email: 'assist@hongik.ac.kr',
   password: 'password',
 };
+
+export const CreateNewFormDto: CreateFormDto = {
+  title: 'New form',
+};
+
+export const updateFormDto: UpdateFormDto = {
+  title: 'changed title',
+  description: 'description',
+  isOpen: false,
+  isEditable: false,
+} as UpdateFormDto;

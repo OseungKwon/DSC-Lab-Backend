@@ -58,6 +58,10 @@ describe('MemberService', () => {
     await prisma.deleteAll();
   });
 
+  afterAll(async () => {
+    await prisma.deleteAll();
+  });
+
   describe('Member Signup', () => {
     it('should sign-up', async () => {
       const result = await service.signup(user1Signup);

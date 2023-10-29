@@ -2,6 +2,7 @@
 import { applyDecorators } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiConsumes,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -18,6 +19,7 @@ import {
   ListFormResponse,
   CreateFormResponse,
   UpdateFormResponse,
+  DeleteFormResponse,
 } from './response';
 
 export const AssistantFormDocs: SwaggerObject<AssistantFormInterface> = {
@@ -57,6 +59,15 @@ export const AssistantFormDocs: SwaggerObject<AssistantFormInterface> = {
     }),
     ApiOkResponse({
       type: UpdateFormResponse,
+    }),
+    ApiConsumes('multipart/form-data'),
+  ),
+  deleteForm: applyDecorators(
+    ApiOperation({
+      summary: 'Form 삭제하기',
+    }),
+    ApiOkResponse({
+      type: DeleteFormResponse,
     }),
   ),
 };

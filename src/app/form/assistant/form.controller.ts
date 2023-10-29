@@ -2,13 +2,17 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
   Patch,
   Post,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 // Third-party Packages
 
@@ -25,6 +29,9 @@ import {
   FormFilterType,
 } from '@infrastructure/paginator';
 import { CreateFormDto, UpdateFormDto } from './dto';
+import { FileLimitFactory } from '@infrastructure/util/multer-option.factory';
+import { FormThumbnailConfig } from '@infrastructure/util/file-limit.config';
+import { FileNameEncoderPipe } from '@infrastructure/util';
 
 @Controller()
 @UseGuards(AssistantGuard)
@@ -61,12 +68,25 @@ export class AssistantFormController implements AssistantFormInterface {
   }
 
   @Patch(':fid')
+  @UseInterceptors(
+    FileInterceptor('thumbnail', FileLimitFactory(FormThumbnailConfig)),
+  )
   @AssistantFormDocs.updateForm
   updateForm(
     @GetAssistant('id', ParseIntPipe) aid: number,
     @Param('fid', ParseIntPipe) fid: number,
     @Body() dto: UpdateFormDto,
+    @UploadedFile(FileNameEncoderPipe) file: Express.Multer.File,
   ) {
-    return this.formService.updateForm(aid, fid, dto);
+    return this.formService.updateForm(aid, fid, dto, file);
+  }
+
+  @Delete(':fid')
+  @AssistantFormDocs.deleteForm
+  deleteForm(
+    @GetAssistant('id') aid: number,
+    @Param('fid', ParseIntPipe) fid: number,
+  ) {
+    return this.formService.deleteForm(aid, fid);
   }
 }

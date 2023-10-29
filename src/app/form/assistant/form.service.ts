@@ -2,17 +2,19 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 
 // Third-party Packages
+import { Form } from '@prisma/client';
 
 // Custom Packages
 import { AssistantFormInterface } from './form.interface';
 import { FormFilterType, PaginateOption } from '@infrastructure/paginator';
 import { PrismaService } from '@app/prisma/prisma.service';
 import { CreateFormDto, UpdateFormDto } from './dto';
-import { Form } from '@prisma/client';
+import { AwsS3Service } from '@s3/aws-s3';
+import { formThumbnailDirectory } from '@infrastructure/util';
 
 @Injectable()
 export class AssistantFormService implements AssistantFormInterface {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private s3: AwsS3Service) {}
 
   async listForm(
     aid: number,
@@ -34,8 +36,6 @@ export class AssistantFormService implements AssistantFormInterface {
         },
       },
     });
-    console.log(paginateOption);
-    console.log(formFilter);
 
     delete formFilter.Where['isOpen'];
 
@@ -143,7 +143,12 @@ export class AssistantFormService implements AssistantFormInterface {
     return createdForm;
   }
 
-  async updateForm(aid: number, fid: number, dto: UpdateFormDto) {
+  async updateForm(
+    aid: number,
+    fid: number,
+    dto: UpdateFormDto,
+    file?: Express.Multer.File,
+  ) {
     let form: Form;
     try {
       form = await this.prisma.form.findUniqueOrThrow({
@@ -155,6 +160,13 @@ export class AssistantFormService implements AssistantFormInterface {
     } catch (err) {
       throw new BadRequestException('FORM_NOT_FOUND');
     }
+    let thumbNailURL = form.thumbnail;
+    if (file) {
+      const imageKey = await this.s3.uploadFile(file, formThumbnailDirectory);
+      thumbNailURL = this.s3.getStaticURL(imageKey, formThumbnailDirectory);
+    }
+
+    dto['thumbnail'] = thumbNailURL;
     const [updatedForm] = await this.prisma.$transaction([
       this.prisma.form.update({
         where: {
@@ -166,6 +178,28 @@ export class AssistantFormService implements AssistantFormInterface {
       }),
     ]);
     return updatedForm;
+  }
+
+  async deleteForm(aid: number, fid: number) {
+    try {
+      const archive = await this.prisma.form.update({
+        where: {
+          id: fid,
+          assistantId: aid,
+        },
+        data: {
+          isArchived: true,
+        },
+        select: {
+          id: true,
+          title: true,
+        },
+      });
+      return archive;
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException('FORM_NOT_FOUND');
+    }
   }
 
   private createDefaulChoices() {
